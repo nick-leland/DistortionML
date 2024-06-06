@@ -1,4 +1,5 @@
 import numpy as np
+from collections import *
 
 size = 10
 
@@ -42,13 +43,16 @@ def search(graph, node):
     visited.append(node)
     stack.append(node)
 
+    print(stack)
     while stack:
         s = stack.pop()
-        print(s, end=" ")
-
-    for n in reversed(graph[s]):
-        if n not in visited:
-            visited.append(n)
-            stack.append(n)
+        print("s = ", s, end=" ")
+        print("graph is a long list here is the first item", graph[0])
+        print(graph[s][0])
+        print(reversed(graph[s]))
+        for n in reversed(graph[s]):
+            if n not in visited:
+                visited.append(n)
+                stack.append(n)
 
 search(maze, maze[0][list(maze[0].keys())[0]][1])
