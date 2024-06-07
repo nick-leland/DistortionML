@@ -1,20 +1,50 @@
 import numpy as np
 from collections import *
 
+# TODO See if you can determine the recursive version of this algorithm
+def search(graph, node):
+    """Basic Depth First Search Algorithm"""
+    order = []
+    visited = []
+    stack = deque()
+
+    visited.append(node)
+    stack.append(node)
+
+    while stack:
+        s = stack.pop()
+        order.append(s)
+        for n in reversed(graph[s]):
+            if n not in visited:
+                visited.append(n)
+                stack.append(n)
+    return order
+
+def sort_list(list_dict, values_dict):
+    """Sorts the list based on the corresponding values"""
+    out_list = []
+
+    for item in [*list_dict.keys()]:
+        converted = [values_dict[x] for x in list_dict[item]]
+        # TODO For the sake of learning, might be beneficial to not use the .sort() feature
+        converted.sort()
+        temp = [[*values_dict.keys()][[*values_dict.values()].index(x)] for x in converted]
+        list_dict[item] = temp
+    return out_list
+
+# Sets the size of the maze
 size = 10
 
-rng = np.random.default_rng(seed=223)
-
+# Create a random generator and then sets random values for each position
+# rng = np.random.default_rng(seed=223)
+rng = np.random.default_rng()
+print(rng.random())
 x = np.zeros((size, size), dtype=np.int16)
-
-
-# Initializes the random values for each maze position
 maze_values = rng.random((size, size))
-# print(maze_values)
-# print(maze_values[0][0])
 
 # Creates a list of all positions in the maze and sets their value equal to the random value
-maze = []
+maze_neighbors = {}
+maze_value = {}
 zsize = size - 1
 for x in range(size):
     for y in range(size):
@@ -30,29 +60,19 @@ for x in range(size):
         if x != zsize:
             neighbors.append(f"{x+1} {y}")
 
-        maze.append({f"{x} {y}" : [maze_values[0][0], neighbors]})
+        # Adds the neighbors and values to the designated dictionary
+        maze_neighbors.update({f"{x} {y}" : neighbors})
+        maze_value.update({f"{x} {y}" : [maze_values[0][0]]})
 
-# Verification print sequence
-# for position in maze:
-#     print(list(position.keys())[0], position[list(position.keys())[0]][1])
+# Sample print to verify
+# print(maze_neighbors[[*maze_neighbors.keys()][0]])
+# print(maze_value[[*maze_neighbors.keys()][0]])
 
-def search(graph, node):
-    visited = []
-    stack = deque()
+# print(maze_neighbors)
 
-    visited.append(node)
-    stack.append(node)
+# Search(graph, node)
+# TODO determine the starting node randomly based on one of the four corners
+print(sort_list(maze_neighbors, maze_value))
+print(search(maze_neighbors, '0 0'))
 
-    print(stack)
-    while stack:
-        s = stack.pop()
-        print("s = ", s, end=" ")
-        print("graph is a long list here is the first item", graph[0])
-        print(graph[s][0])
-        print(reversed(graph[s]))
-        for n in reversed(graph[s]):
-            if n not in visited:
-                visited.append(n)
-                stack.append(n)
 
-search(maze, maze[0][list(maze[0].keys())[0]][1])
