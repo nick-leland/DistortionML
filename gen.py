@@ -73,6 +73,7 @@ def generate(size, seed=None):
     # TODO determine the starting node randomly based on one of the four corners
     
     sort_list(maze_neighbors, maze_value)
+    print(maze_neighbors)
     return search(maze_neighbors, '0 0')
 
 
