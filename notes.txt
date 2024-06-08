@@ -1,0 +1,30 @@
+# # # # # # # # # # # # #	# # # # # # # # # # # # #	# # # # # # # # # # # # #
+#       #       #       #	#       #       #       #	#       #       #       #  
+#  0 0  #  0 1  #  0 2  #	#   0   #       #       #	#       #       #       #  
+#       #       #       #	#       #       #       #	#       #       #       #  
+# # # # # # # # # # # # #	# # # # # # # # # # # # #	#       # # # # # # # # #
+#       #       #       #	#       #       #       #	#       #       #       #  
+#  1 0  #  1 1  #  1 2  #	#   1   #       #       #	#       #       #       #  
+#       #       #       #	#       #       #       #	#       #       #       #  
+# # # # # # # # # # # # #	# # # # # # # # # # # # #	# # # # # # # # # # # # #
+#       #       #       #	#       #       #       #	#       #       #       #  
+#  2 0  #  2 1  #  2 2  #	#       #       #       #	#       #       #       #  
+#       #       #       #	#       #       #       #	#       #       #       #  
+# # # # # # # # # # # # #	# # # # # # # # # # # # #	# # # # # # # # # # # # #
+Fig 1				Fig 2				Fig 3
+
+Fig 1 shows the current shape that we are able to generate, assuming a 1 pixel wall thickness and a 3 pixel cell size.
+We need to locate walls based on neighbors. Let's look at a sample of a generation algorithm output. 
+['0 0', '1 0', '1 1', '2 1', '2 2', '1 2', '0 2', '2 0', '0 1'] 
+Locations are given in an 'X Y' format seperated by a space. Fig 1 shows a description of the coordinate system for our maze. 
+Given our generation our first move concerns '0 0' and '1 0'.  We have identified those two positions in Fig 2.  
+Then next step is to evaluate whether the two positions are neighbors.  We will utilize the output neighbor dictionary which will depect the following: 
+{'0 0' : ['1 0', '0 1'], '1 0' : ['2 0', '1 1', '0 0'] ... }
+By calling our current position as the key, we are able to verify whether the position we are moving to is a neighboring value.  
+Here we can see that it evaluates true, both are positions that are classified as neighbors.  
+Because of this, we need to locate the position of the wall between these two, and remove it.  
+Once we have determined that the pieces are neighbors, we can then see which value is different between the two to determine the wall that must be removed. 
+'0 0' -> '1 0' has a difference in the X axis, therefore, we know the wall we will remove is horizontal.
+We can then locate the corner of the wall and loop x and y times over to set the color equal to the background where the x value is the length of a cell and the y value is the thickness of a pixel.  
+It could be useful to do this in steps, that way we can animate the action of the maze being createdd (Maybe some front end addition)
+
