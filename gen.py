@@ -36,7 +36,8 @@ def sort_list(list_dict, values_dict):
     return out_list
 
 def generate(size, seed=None):
-    """Generates the Maze"""
+    """Generates a size x size maze with a given seed
+    Utilizes numpy random.default_rng for seed input"""
     # Create a random generator and then sets random values for each position
     if seed == None:
         rng = np.random.default_rng()
@@ -73,15 +74,15 @@ def generate(size, seed=None):
     # TODO determine the starting node randomly based on one of the four corners
     
     sort_list(maze_neighbors, maze_value)
-    print(maze_neighbors)
     return search(maze_neighbors, '0 0')
 
 
 if __name__ == "__main__":
     # Sets the size of the maze
-    size = int(input("What size of maze would you like to generate?"))
+    # TODO Explore a maze that is not a square
+    size = int(input("What size of maze would you like to generate? \n"))
 
-    seedq = input("Do you want a seed? Please answer Yes or No")[0]
+    seedq = input("Do you want a seed? Please answer Yes or No \n")[0]
     seedq = seedq.title()
     if seedq == 'N':
         seed = None
