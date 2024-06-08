@@ -31,10 +31,45 @@ for y in range(pixels):
         if (x % (cell + walls)) < walls or (y % (cell + walls)) < walls:
             a[x][y] = 1  # Wall
 
+# Now we will begin to follow the generate instruction to create the maze
+first = test_path[:2]
+print("First Move:")
+print(first)
+print("Corresponding Dictionary:")
+[print(f"'{x}' :", test_neighbors[x]) for x in first]
+
+def eval_move(pos1, pos2):
+    pos1 = pos1.split(" ")
+    pos2 = pos2.split(" ")
+    x1 = pos1[0]
+    y1 = pos1[1]
+    x2 = pos2[0]
+    y2 = pos2[1]
+    print("Position 1 =", x1, y1)
+    print("Position 2 =", x2, y2)
+
+    if x1 - x2 == 1:
+        print("X move, vertical wall removal")
+    if y1 - y2 == 1:
+        print("Y move, horizontal wall removal")
+    if y1 -y2 > 1 or x1 - y2 > 1
+
+
+print() 
+eval_move(first[0], first[1])
+print()
+
+def horizon_wall(pos1, pos2, cellsize, wallsize):
+    """Used to remove the wall between two horizontal positions"""
+    print(pos1)
+    print(pos2)
+
+horizon_wall(first[0], first[1], cell, walls)
+
         
 im = Image.fromarray(a * 255)
 im = im.convert('L')
 
-print(im.format, im.size, im.mode)
-im.show()
+# print(im.format, im.size, im.mode)
+# im.show()
 # im.save("test.jpg")
