@@ -41,18 +41,25 @@ print("Corresponding Dictionary:")
 def eval_move(pos1, pos2):
     pos1 = pos1.split(" ")
     pos2 = pos2.split(" ")
-    x1 = pos1[0]
-    y1 = pos1[1]
-    x2 = pos2[0]
-    y2 = pos2[1]
-    print("Position 1 =", x1, y1)
-    print("Position 2 =", x2, y2)
+    x1 = int(pos1[0])
+    y1 = int(pos1[1])
+    x2 = int(pos2[0])
+    y2 = int(pos2[1])
+    x_vals = [x1, x2]
+    y_vals = [y1, y2]
+    print("Position 1 =", x_vals)
+    print("Position 2 =", y_vals)
 
-    if x1 - x2 == 1:
+    # This needs to be a relative position
+    if  max(x_vals) - min(x_vals) != 0:
         print("X move, vertical wall removal")
-    if y1 - y2 == 1:
+    if  max(y_vals) - min(y_vals) != 0:
         print("Y move, horizontal wall removal")
-    if y1 -y2 > 1 or x1 - y2 > 1
+
+# [0, 0] will always be in the top left location
+# To find the walls, we need to move to the location in which the wall starts, and then loop for the duration
+# 
+
 
 
 print() 
