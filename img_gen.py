@@ -42,22 +42,43 @@ def horizon_wall(pos1, pos2, cellsize, wallsize):
     pos2 = pos2.split(" ")
     y1 = int(pos1[1])
     y2 = int(pos2[1])
-
+    # Doubling up here for no reason
     pos = max([int(pos1[1]), int(pos2[1])])
     x_off = (wallsize + cellsize) * pos
     y_off = wallsize
     for x in range(wallsize):
         for y in range(cellsize):
-            a[x+x_off][y+y_off] = 0   
+            if a[x+x_off][y+y_off] == 1:
+                a[x+x_off][y+y_off] = 0   
+            elif a[x+x_off][y+y_off] == 0:
+                a[x+x_off][y+y_off] = 1   
 
-
-def move(pos1, pos2):
+def vertical_wall(pos1, pos2, cellsize, wallsize):
     pos1 = pos1.split(" ")
     pos2 = pos2.split(" ")
     x1 = int(pos1[0])
-    y1 = int(pos1[1])
     x2 = int(pos2[0])
-    y2 = int(pos2[1])
+    # Doubling up here for no reason
+    pos = max([int(pos1[0]), int(pos2[0])])
+    y_off = (wallsize + cellsize) * pos
+    x_off = wallsize
+    for y in range(wallsize):
+        for x in range(cellsize):
+            if a[x+x_off][y+y_off] == 1:
+                a[x+x_off][y+y_off] = 0   
+            elif a[x+x_off][y+y_off] == 0:
+                a[x+x_off][y+y_off] = 1   
+
+
+
+def move(pos1, pos2, cellsize, wallsize, neighbors_dict):
+    # This is kinda messy, can be reformatted for sure
+    pos1_mod = pos1.split(" ")
+    pos2_mod = pos2.split(" ")
+    x1 = int(pos1_mod[0])
+    y1 = int(pos1_mod[1])
+    x2 = int(pos2_mod[0])
+    y2 = int(pos2_mod[1])
     x_vals = [x1, x2]
     y_vals = [y1, y2]
     print("Position 1 =", x_vals)
@@ -66,6 +87,8 @@ def move(pos1, pos2):
     # This needs to be a relative position
     if  max(x_vals) - min(x_vals) != 0:
         print("X move, vertical wall removal")
+        # First need to detect neighbors, luckily this is omnidirectional
+        vertical_wall(pos1, pos2, cellsize, wallsize)
     if  max(y_vals) - min(y_vals) != 0:
         print("Y move, horizontal wall removal")
         horizon_wall(pos1, pos2, cellsize, wallsize)
@@ -84,20 +107,25 @@ def move(pos1, pos2):
 
 
 print() 
-move(first[0], first[1])
+move(first[0], first[1], cell, walls, test_neighbors)
+print()
+move('2 0', '1 0', cell, walls, test_neighbors)
 print()
 
-horizon_wall(first[0], first[1], cell, walls)
+# horizon_wall(first[0], first[1], cell, walls)
 
-horizon_wall('0 4', '0 5', cell, walls)
+# horizon_wall('0 4', '0 5', cell, walls)
 '0 1'
 
-def horizon_wall(pos1, pos2, cellsize, wallsize):
-    """Used to remove the wall between two horizontal positions"""
-    print(pos1)
-    print(pos2)
 
-horizon_wall(first[0], first[1], cell, walls)
+print(test_path)
+for move_val in range(len(test_path)):
+    if move_val+1 > len(test_path)-1:
+        pass
+    elif test_path[move_val+1] in test_neighbors[test_path[move_val]]:
+            move(test_path[move_val], test_path[move_val+1], cell, walls, test_neighbors)
+            
+
 
         
 im = Image.fromarray(a * 255)
