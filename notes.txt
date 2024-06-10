@@ -28,3 +28,18 @@ Once we have determined that the pieces are neighbors, we can then see which val
 We can then locate the corner of the wall and loop x and y times over to set the color equal to the background where the x value is the length of a cell and the y value is the thickness of a pixel.  
 It could be useful to do this in steps, that way we can animate the action of the maze being createdd (Maybe some front end addition)
 
+          1       2 
+  # # # # # # # # # # # # #
+  #       #       #       #  
+  #  0 0  #  1 0  #  2 0  #  
+  #       #       #       #  
+1 # # # # # # # # # # # # #
+  #       #       #       #  
+  #  0 1  #  1 1  #  2 1  #  
+  #       #       #       #  
+2 # # # # # # # # # # # # #
+  #       #       #       #
+  #  0 2  #  1 2  #  2 2  #
+  #       #       #       #
+  # # # # # # # # # # # # #
+

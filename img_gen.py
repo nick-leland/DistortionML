@@ -58,13 +58,27 @@ def eval_move(pos1, pos2):
 
 # [0, 0] will always be in the top left location
 # To find the walls, we need to move to the location in which the wall starts, and then loop for the duration
-# 
 
+#
+#
+# NICK TOMMOROW PLEASE READ FIRST
+#
+#
+# Working on figuring out a way to calculate the location to remove given the two cells.  Not productive today sorry
 
-
+def horizon_wall(pos1, pos2, cellsize, wallsize):
+    pos = 1
+    x_off = (wallsize + cellsize) * pos
+    y_off = wallsize
+    for x in range(wallsize):
+        for y in range(cellsize):
+            a[x+x_off][y+y_off] = 0   
 print() 
 eval_move(first[0], first[1])
 print()
+
+horizon_wall(first[0], first[1], cell, walls)
+
 
 def horizon_wall(pos1, pos2, cellsize, wallsize):
     """Used to remove the wall between two horizontal positions"""
@@ -78,5 +92,5 @@ im = Image.fromarray(a * 255)
 im = im.convert('L')
 
 # print(im.format, im.size, im.mode)
-# im.show()
+im.show()
 # im.save("test.jpg")
