@@ -18,7 +18,6 @@ print(pixels)
 # First lets try to make a grid
 a = np.empty((pixels, pixels), dtype=np.uint8)
 
-
 # Vertical
 for x in range(pixels):
     for y in range(pixels):
@@ -38,7 +37,21 @@ print(first)
 print("Corresponding Dictionary:")
 [print(f"'{x}' :", test_neighbors[x]) for x in first]
 
-def eval_move(pos1, pos2):
+def horizon_wall(pos1, pos2, cellsize, wallsize):
+    pos1 = pos1.split(" ")
+    pos2 = pos2.split(" ")
+    y1 = int(pos1[1])
+    y2 = int(pos2[1])
+
+    pos = max([int(pos1[1]), int(pos2[1])])
+    x_off = (wallsize + cellsize) * pos
+    y_off = wallsize
+    for x in range(wallsize):
+        for y in range(cellsize):
+            a[x+x_off][y+y_off] = 0   
+
+
+def move(pos1, pos2):
     pos1 = pos1.split(" ")
     pos2 = pos2.split(" ")
     x1 = int(pos1[0])
@@ -55,6 +68,7 @@ def eval_move(pos1, pos2):
         print("X move, vertical wall removal")
     if  max(y_vals) - min(y_vals) != 0:
         print("Y move, horizontal wall removal")
+        horizon_wall(pos1, pos2, cellsize, wallsize)
 
 # [0, 0] will always be in the top left location
 # To find the walls, we need to move to the location in which the wall starts, and then loop for the duration
@@ -66,19 +80,17 @@ def eval_move(pos1, pos2):
 #
 # Working on figuring out a way to calculate the location to remove given the two cells.  Not productive today sorry
 
-def horizon_wall(pos1, pos2, cellsize, wallsize):
-    pos = 1
-    x_off = (wallsize + cellsize) * pos
-    y_off = wallsize
-    for x in range(wallsize):
-        for y in range(cellsize):
-            a[x+x_off][y+y_off] = 0   
+# Need to locate wall, if positions are reversed they should still locate the same wall.
+
+
 print() 
-eval_move(first[0], first[1])
+move(first[0], first[1])
 print()
 
 horizon_wall(first[0], first[1], cell, walls)
 
+horizon_wall('0 4', '0 5', cell, walls)
+'0 1'
 
 def horizon_wall(pos1, pos2, cellsize, wallsize):
     """Used to remove the wall between two horizontal positions"""
