@@ -13,31 +13,34 @@ walls = 5
 cell = 50
 
 pixels = (size * cell) + (walls * (size+1))
-print(pixels)
+print(f"pixels are {pixels}")
 
 # First lets try to make a grid
-a = np.empty((pixels, pixels), dtype=np.uint8)
+# a = np.empty((pixels, pixels), dtype=np.uint8)
+a = np.zeros((pixels, pixels), dtype=np.uint8)
 
 # Vertical
 for x in range(pixels):
     for y in range(pixels):
         if (x % (cell + walls)) < walls or (y % (cell + walls)) < walls:
-            a[x][y] = 1  # Wall
+            # a[x][y] = 1  # Wall
+            a[x][y] = 255  # Wall
              
 # Horizontal
 for y in range(pixels):
     for x in range(pixels):
         if (x % (cell + walls)) < walls or (y % (cell + walls)) < walls:
-            a[x][y] = 1  # Wall
+            # a[x][y] = 1  # Wall
+            a[x][y] = 255  # Wall
 
 # Now we will begin to follow the generate instruction to create the maze
-first = test_path[:2]
-print("First Move:")
-print(first)
-print("Corresponding Dictionary:")
-[print(f"'{x}' :", test_neighbors[x]) for x in first]
+# first = test_path[:2]
+# print("First Move:")
+# print(first)
+# print("Corresponding Dictionary:")
+# [print(f"'{x}' :", test_neighbors[x]) for x in first]
 
-def horizon_wall(pos1, pos2, cellsize, wallsize):
+def horizon_wall(a, pos1, pos2, cellsize, wallsize):
     pos1 = pos1.split(" ")
     pos2 = pos2.split(" ")
     y1 = int(pos1[1])
@@ -51,13 +54,10 @@ def horizon_wall(pos1, pos2, cellsize, wallsize):
     y_off = ((wallsize + cellsize) * xpos) + wallsize
     for x in range(wallsize):
         for y in range(cellsize):
-            # if a[x+x_off][y+y_off] == 1:
-            #     a[x+x_off][y+y_off] = 0   
-            # elif a[x+x_off][y+y_off] == 0:
-            #     a[x+x_off][y+y_off] = 1   
             a[x+x_off][y+y_off] = 0   
 
-def vertical_wall(pos1, pos2, cellsize, wallsize):
+
+def vertical_wall(a, pos1, pos2, cellsize, wallsize):
     pos1 = pos1.split(" ")
     pos2 = pos2.split(" ")
     x1 = int(pos1[0])
@@ -69,15 +69,25 @@ def vertical_wall(pos1, pos2, cellsize, wallsize):
     x_off = ((wallsize + cellsize) * ypos) + wallsize
     for y in range(wallsize):
         for x in range(cellsize):
-            # if a[x+x_off][y+y_off] == 1:
-            #     a[x+x_off][y+y_off] = 0   
-            # elif a[x+x_off][y+y_off] == 0:
-            #     a[x+x_off][y+y_off] = 1   
             a[x+x_off][y+y_off] = 0   
 
 
+def recolor(a, position, cellsize, wallsize, color):
+    position = position.split(" ")
+    ypos = int(position[1])
+    xpos = int(position[0])
+    y_off = (wallsize + cellsize) * xpos + wallsize
+    x_off = ((wallsize + cellsize) * ypos) + wallsize
+    for x in range(cellsize):
+        for y in range(cellsize):
+            # if a[x+x_off][y+y_off] == 100:
+            #     a[x+x_off][y+y_off] = 0
+            # elif a[x+x_off][y+y_off] == 0:
+            #     a[x+x_off][y+y_off] = 100
+            a[x+x_off][y+y_off] = color
 
-def move(pos1, pos2, cellsize, wallsize, neighbors_dict):
+
+def move(a, pos1, pos2, cellsize, wallsize, neighbors_dict):
     # This is kinda messy, can be reformatted for sure
     pos1_mod = pos1.split(" ")
     pos2_mod = pos2.split(" ")
@@ -89,60 +99,36 @@ def move(pos1, pos2, cellsize, wallsize, neighbors_dict):
     y_vals = [y1, y2]
     print("Position 1 =", x_vals)
     print("Position 2 =", y_vals)
-
-    # This needs to be a relative position
     if  max(x_vals) - min(x_vals) != 0:
         print("X move, vertical wall removal")
-        # First need to detect neighbors, luckily this is omnidirectional
-        vertical_wall(pos1, pos2, cellsize, wallsize)
+        vertical_wall(a, pos1, pos2, cellsize, wallsize)
     if  max(y_vals) - min(y_vals) != 0:
         print("Y move, horizontal wall removal")
-        horizon_wall(pos1, pos2, cellsize, wallsize)
-
-# [0, 0] will always be in the top left location
-# To find the walls, we need to move to the location in which the wall starts, and then loop for the duration
-
-#
-#
-# NICK TOMMOROW PLEASE READ FIRST
-#
-#
-# Working on figuring out a way to calculate the location to remove given the two cells.  Not productive today sorry
-
-# Need to locate wall, if positions are reversed they should still locate the same wall.
+        horizon_wall(a, pos1, pos2, cellsize, wallsize)
 
 
-# print() 
-# move(first[0], first[1], cell, walls, test_neighbors)
-# print()
-# move('2 0', '1 0', cell, walls, test_neighbors)
-# print()
-# move('2 2', '2 3', cell, walls, test_neighbors)
-# print()
-# move('7 4', '6 4', cell, walls, test_neighbors)
-# print()
-
-
-# horizon_wall(first[0], first[1], cell, walls)
-
-# horizon_wall('0 4', '0 5', cell, walls)
-
-# This is the big run right here
 print(test_path)
+print("Length limit is", (len(test_path)-1))
 for move_val in range(len(test_path)):
-    if move_val+1 > len(test_path)-1:
+    if (move_val+1) > (len(test_path)-1):
         pass
     elif test_path[move_val+1] in test_neighbors[test_path[move_val]]:
-            move(test_path[move_val], test_path[move_val+1], cell, walls, test_neighbors)
-            im = Image.fromarray(a * 255)
-            im = im.convert('L')
-            im.save(f"{move_val}.jpg")
+        # Create Color
+        recolor(a, test_path[move_val], cell, walls, 50)
+        recolor(a, test_path[move_val+1], cell, walls, 100)
+        move(a, test_path[move_val], test_path[move_val+1], cell, walls, test_neighbors)
+        # This is for if you want to save an animation
+        im = Image.fromarray(a)
+        im = im.convert('L')
+        im.save(f"{move_val}\t{test_path[move_val]}-{test_path[move_val+1]}.jpg")
+        # Remove Color
+        recolor(a, test_path[move_val], cell, walls, 0)
+        recolor(a, test_path[move_val+1], cell, walls, 0)
 
-            
-
-
+    else:
+        print(f"{test_path[move_val+1]} is not in {test_neighbors[test_path[move_val]]}")
         
-im = Image.fromarray(a * 255)
+# im = Image.fromarray(a * 255)
+im = Image.fromarray(a)
 im = im.convert('L')
-
 im.show()
