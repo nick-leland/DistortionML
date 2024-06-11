@@ -80,12 +80,16 @@ def generate(size, seed=None):
 if __name__ == "__main__":
     # Sets the size of the maze
     # TODO Explore a maze that is not a square
-    size = int(input("What size of maze would you like to generate? \n"))
+    
+    # size = int(input("What size of maze would you like to generate? \n"))
+    size = 5
 
-    seedq = input("Do you want a seed? Please answer Yes or No \n")[0]
-    seedq = seedq.title()
-    if seedq == 'N':
-        seed = None
-    else:
-        seed = int(input("Please give a number for the seed"))
+    # seedq = input("Do you want a seed? Please answer Yes or No \n")[0]
+    # seedq = seedq.title()
+    # if seedq == 'N':
+    #     seed = None
+    # else:
+    #     seed = int(input("Please give a number for the seed"))
+    seed = None
     print(generate(size, seed))
+
