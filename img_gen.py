@@ -97,18 +97,18 @@ def move(a, pos1, pos2, cellsize, wallsize, neighbors_dict):
     y2 = int(pos2_mod[1])
     x_vals = [x1, x2]
     y_vals = [y1, y2]
-    print("Position 1 =", x_vals)
-    print("Position 2 =", y_vals)
+    # print("Position 1 =", x_vals)
+    # print("Position 2 =", y_vals)
     if  max(x_vals) - min(x_vals) != 0:
-        print("X move, vertical wall removal")
+        # print("X move, vertical wall removal")
         vertical_wall(a, pos1, pos2, cellsize, wallsize)
     if  max(y_vals) - min(y_vals) != 0:
-        print("Y move, horizontal wall removal")
+        # print("Y move, horizontal wall removal")
         horizon_wall(a, pos1, pos2, cellsize, wallsize)
 
 
 print(test_path)
-print("Length limit is", (len(test_path)-1))
+# print("Length limit is", (len(test_path)-1))
 for move_val in range(len(test_path)):
     if (move_val+1) > (len(test_path)-1):
         pass
@@ -126,7 +126,27 @@ for move_val in range(len(test_path)):
         recolor(a, test_path[move_val+1], cell, walls, 0)
 
     else:
-        print(f"{test_path[move_val+1]} is not in {test_neighbors[test_path[move_val]]}")
+        print(f"{test_path[move_val+1]} trying to get to {test_path[move_val]} but not in {test_neighbors[test_path[move_val]]}")
+        t = test_path[:move_val]
+        t.reverse()
+        print(t)
+            
+        for _ in t:
+            if _ not in test_neighbors[test_path[move_val]]:
+                pass
+            else:
+                recolor(a, test_path[move_val], cell, walls, 0)
+                recolor(a, _, cell, walls, 0)
+                move(a, test_path[move_val], _, cell, walls, test_neighbors)
+                # This is for if you want to save an animation
+                im = Image.fromarray(a)
+                im = im.convert('L')
+                im.save(f"{move_val}\t{test_path[move_val]}-{test_path[move_val+1]}.jpg")
+                # Remove Color
+                recolor(a, test_path[move_val], cell, walls, 0)
+                recolor(a, test_path[move_val+1], cell, walls, 0)
+                break
+
         
 # im = Image.fromarray(a * 255)
 im = Image.fromarray(a)
