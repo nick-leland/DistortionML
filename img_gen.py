@@ -2,8 +2,6 @@ from PIL import Image
 import numpy as np
 
 # Generic test values from generation algo
-test_path = ['0 0', '0 1', '0 2', '1 2', '2 2', '2 3', '3 3', '3 4', '4 4', '4 3', '4 2', '4 1', '4 0', '3 0', '2 0', '3 1', '2 4', '1 4', '0 4', '3 2', '2 1', '1 3', '0 3', '1 1', '1 0']
-test_neighbors = {'0 0': ['0 1', '1 0'], '0 1': ['0 2', '0 0', '1 1'], '0 2': ['0 1', '1 2', '0 3'], '0 3': ['0 2', '0 4', '1 3'], '0 4': ['1 4', '0 3'], '1 0': ['0 0', '2 0', '1 1'], '1 1': ['0 1', '1 2', '2 1', '1 0'], '1 2': ['0 2', '1 1', '2 2', '1 3'], '1 3': ['2 3', '1 4', '1 2', '0 3'], '1 4': ['0 4', '1 3', '2 4'], '2 0': ['3 0', '2 1', '1 0'], '2 1': ['2 0', '1 1', '2 2', '3 1'], '2 2': ['2 3', '3 2', '1 2', '2 1'], '2 3': ['2 2', '3 3', '1 3', '2 4'], '2 4': ['2 3', '1 4', '3 4'], '3 0': ['4 0', '2 0', '3 1'], '3 1': ['4 1', '3 0', '3 2', '2 1'], '3 2': ['2 2', '4 2', '3 3', '3 1'], '3 3': ['2 3', '3 4', '3 2', '4 3'], '3 4': ['4 4', '3 3', '2 4'], '4 0': ['4 1', '3 0'], '4 1': ['4 0', '4 2', '3 1'], '4 2': ['4 1', '3 2', '4 3'], '4 3': ['4 4', '4 2', '3 3'], '4 4': ['3 4', '4 3']}
 
 
 def init(size, walls, cell):
@@ -87,60 +85,60 @@ def move(a, pos1, pos2, cellsize, wallsize, neighbors_dict):
         horizon_wall(a, pos1, pos2, cellsize, wallsize)
 
 
-init_size = 5
-init_walls = 5
-init_cell = 50
-a = init(init_size, init_walls, init_cell)
+def run(test_path, test_neighbors, cell, walls, size):
+    a = init(size, walls, cell)
+    for move_val in range(len(test_path)):
+        if (move_val) == (len(test_path)-1):
+            pass
+        elif test_path[move_val-1] in test_neighbors[test_path[move_val]]:
+            # Create Color
+            recolor(a, test_path[move_val], cell, walls, 50)
+            recolor(a, test_path[move_val-1], cell, walls, 100)
+    
+            move(a, test_path[move_val], test_path[move_val-1], cell, walls, test_neighbors)
+            # This is for if you want to save an animation
+            im = Image.fromarray(a)
+            im = im.convert('L')
+            # im.save(f"{move_val}\t{test_path[move_val]}-{test_path[move_val-1]}.jpg")
+    
+            # Remove Color
+            recolor(a, test_path[move_val], cell, walls, 0)
+            recolor(a, test_path[move_val-1], cell, walls, 0)
+    
+        else:
+            # If you have issues with weird looking mazes, the problem is here I think
+            t = test_path[:move_val-1]
+            t.reverse()
+                
+            for _ in t:
+                if _ not in test_neighbors[test_path[move_val]]:
+                    pass
+                else:
+                    # Create Color
+                    recolor(a, test_path[move_val], cell, walls, 0)
+                    recolor(a, _, cell, walls, 0)
+    
+                    move(a, test_path[move_val], _, cell, walls, test_neighbors)
+                    # This is for if you want to save an animation
+                    im = Image.fromarray(a)
+                    im = im.convert('L')
+                     #im.save(f"{move_val}\t{test_path[move_val]}-{test_path[move_val-1]}.jpg")
+    
+                    # Remove Color
+                    recolor(a, test_path[move_val], cell, walls, 0)
+                    recolor(a, _, cell, walls, 0)
+                    break
+    im = Image.fromarray(a)
+    im = im.convert('L')
+    im.show()
 
-size = init_size
-walls = init_walls 
-cell = init_cell
 
-for move_val in range(len(test_path)):
-    if (move_val) == (len(test_path)-1):
-        pass
-    elif test_path[move_val-1] in test_neighbors[test_path[move_val]]:
-        # Create Color
-        recolor(a, test_path[move_val], cell, walls, 50)
-        recolor(a, test_path[move_val-1], cell, walls, 100)
+if __name__ == "__main__":
+    test_path = ['0 0', '0 1', '0 2', '1 2', '2 2', '2 3', '3 3', '3 4', '4 4', '4 3', '4 2', '4 1', '4 0', '3 0', '2 0', '3 1', '2 4', '1 4', '0 4', '3 2', '2 1', '1 3', '0 3', '1 1', '1 0']
+    test_neighbors = {'0 0': ['0 1', '1 0'], '0 1': ['0 2', '0 0', '1 1'], '0 2': ['0 1', '1 2', '0 3'], '0 3': ['0 2', '0 4', '1 3'], '0 4': ['1 4', '0 3'], '1 0': ['0 0', '2 0', '1 1'], '1 1': ['0 1', '1 2', '2 1', '1 0'], '1 2': ['0 2', '1 1', '2 2', '1 3'], '1 3': ['2 3', '1 4', '1 2', '0 3'], '1 4': ['0 4', '1 3', '2 4'], '2 0': ['3 0', '2 1', '1 0'], '2 1': ['2 0', '1 1', '2 2', '3 1'], '2 2': ['2 3', '3 2', '1 2', '2 1'], '2 3': ['2 2', '3 3', '1 3', '2 4'], '2 4': ['2 3', '1 4', '3 4'], '3 0': ['4 0', '2 0', '3 1'], '3 1': ['4 1', '3 0', '3 2', '2 1'], '3 2': ['2 2', '4 2', '3 3', '3 1'], '3 3': ['2 3', '3 4', '3 2', '4 3'], '3 4': ['4 4', '3 3', '2 4'], '4 0': ['4 1', '3 0'], '4 1': ['4 0', '4 2', '3 1'], '4 2': ['4 1', '3 2', '4 3'], '4 3': ['4 4', '4 2', '3 3'], '4 4': ['3 4', '4 3']}
+    init_size = 5
+    init_walls = 5
+    init_cell = 50
 
-        move(a, test_path[move_val], test_path[move_val-1], cell, walls, test_neighbors)
-        # This is for if you want to save an animation
-        im = Image.fromarray(a)
-        im = im.convert('L')
-        im.save(f"{move_val}\t{test_path[move_val]}-{test_path[move_val-1]}.jpg")
-
-        # Remove Color
-        recolor(a, test_path[move_val], cell, walls, 0)
-        recolor(a, test_path[move_val-1], cell, walls, 0)
-
-    else:
-        # If you have issues with weird looking mazes, the problem is here I think
-        t = test_path[:move_val-1]
-        t.reverse()
-            
-        for _ in t:
-            if _ not in test_neighbors[test_path[move_val]]:
-                pass
-            else:
-                # Create Color
-                recolor(a, test_path[move_val], cell, walls, 0)
-                recolor(a, _, cell, walls, 0)
-
-                move(a, test_path[move_val], _, cell, walls, test_neighbors)
-                # This is for if you want to save an animation
-                im = Image.fromarray(a)
-                im = im.convert('L')
-                im.save(f"{move_val}\t{test_path[move_val]}-{test_path[move_val-1]}.jpg")
-
-                # Remove Color
-                recolor(a, test_path[move_val], cell, walls, 0)
-                recolor(a, _, cell, walls, 0)
-                break
-
+    run(test_path, test_neighbors, init_cell, init_walls, init_size)
         
-im = Image.fromarray(a)
-im = im.convert('L')
-im.show()
-
-# if __name__ == "__main__":
