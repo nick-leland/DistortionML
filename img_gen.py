@@ -108,26 +108,32 @@ def move(a, pos1, pos2, cellsize, wallsize, neighbors_dict):
 
 
 print(test_path)
+print(len(test_path))
+
 # print("Length limit is", (len(test_path)-1))
 for move_val in range(len(test_path)):
-    if (move_val+1) > (len(test_path)-1):
-        pass
-    elif test_path[move_val+1] in test_neighbors[test_path[move_val]]:
+    print(move_val)
+    if (move_val) == (len(test_path)-1):
+        print("passing")
+        
+    elif test_path[move_val-1] in test_neighbors[test_path[move_val]]:
+        print("success")
         # Create Color
         recolor(a, test_path[move_val], cell, walls, 50)
-        recolor(a, test_path[move_val+1], cell, walls, 100)
-        move(a, test_path[move_val], test_path[move_val+1], cell, walls, test_neighbors)
+        recolor(a, test_path[move_val-1], cell, walls, 100)
+        move(a, test_path[move_val], test_path[move_val-1], cell, walls, test_neighbors)
         # This is for if you want to save an animation
         im = Image.fromarray(a)
         im = im.convert('L')
-        im.save(f"{move_val}\t{test_path[move_val]}-{test_path[move_val+1]}.jpg")
+        im.save(f"{move_val}\t{test_path[move_val]}-{test_path[move_val-1]}.jpg")
         # Remove Color
         recolor(a, test_path[move_val], cell, walls, 0)
-        recolor(a, test_path[move_val+1], cell, walls, 0)
+        recolor(a, test_path[move_val-1], cell, walls, 0)
 
     else:
-        print(f"{test_path[move_val+1]} trying to get to {test_path[move_val]} but not in {test_neighbors[test_path[move_val]]}")
-        t = test_path[:move_val]
+        print(f"{test_path[move_val]} trying to get to {test_path[move_val-1]} but not in {test_neighbors[test_path[move_val]]}")
+        t = test_path[:move_val-1]
+        print(t)
         t.reverse()
         print(t)
             
@@ -135,16 +141,18 @@ for move_val in range(len(test_path)):
             if _ not in test_neighbors[test_path[move_val]]:
                 pass
             else:
+                print(f"recoloring {test_path[move_val]} and {_}")
                 recolor(a, test_path[move_val], cell, walls, 0)
                 recolor(a, _, cell, walls, 0)
                 move(a, test_path[move_val], _, cell, walls, test_neighbors)
                 # This is for if you want to save an animation
                 im = Image.fromarray(a)
                 im = im.convert('L')
-                im.save(f"{move_val}\t{test_path[move_val]}-{test_path[move_val+1]}.jpg")
-                # Remove Color
+                print(f"picture {move_val}\t{test_path[move_val]}-{test_path[move_val-1]}.jpg")
+                im.save(f"{move_val}\t{test_path[move_val]}-{test_path[move_val-1]}.jpg")
                 recolor(a, test_path[move_val], cell, walls, 0)
-                recolor(a, test_path[move_val+1], cell, walls, 0)
+                recolor(a, _, cell, walls, 0)
+                # Remove Color
                 break
 
         
