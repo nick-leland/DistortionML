@@ -1,8 +1,6 @@
 from PIL import Image
 import numpy as np
 
-# Generic test values from generation algo
-
 
 def init(size, walls, cell):
     """Sets the initial numpy array"""
@@ -10,19 +8,21 @@ def init(size, walls, cell):
     pixels = (size * cell) + (walls * (size+1))
     print(f"Image resolution is {pixels}x{pixels}")
     
-    a = np.zeros((pixels, pixels), dtype=np.uint8)
+    # a = np.zeros((pixels, pixels), dtype=np.uint8)
+    # Change to accomodate RGB
+    a = np.zeros((pixels, pixels, 3), dtype=np.uint8)
     
     # Vertical walls
     for x in range(pixels):
         for y in range(pixels):
             if (x % (cell + walls)) < walls or (y % (cell + walls)) < walls:
-                a[x][y] = 255
+                a[x][y] = [255, 255, 255]
                  
     # Horizontal walls
     for y in range(pixels):
         for x in range(pixels):
             if (x % (cell + walls)) < walls or (y % (cell + walls)) < walls:
-                a[x][y] = 255
+                a[x][y] = [255, 255, 255]
     return a
 
 
@@ -40,8 +40,8 @@ def horizon_wall(a, pos1, pos2, cellsize, wallsize):
     y_off = ((wallsize + cellsize) * xpos) + wallsize
     for x in range(wallsize):
         for y in range(cellsize):
-            a[x+x_off][y+y_off] = 0   
-
+            a[x+x_off][y+y_off] = [0, 0, 0]   
+ 
 
 def vertical_wall(a, pos1, pos2, cellsize, wallsize):
     pos1 = pos1.split(" ")
@@ -55,7 +55,7 @@ def vertical_wall(a, pos1, pos2, cellsize, wallsize):
     x_off = ((wallsize + cellsize) * ypos) + wallsize
     for y in range(wallsize):
         for x in range(cellsize):
-            a[x+x_off][y+y_off] = 0   
+            a[x+x_off][y+y_off] = [0, 0, 0]   
 
 
 def recolor(a, position, cellsize, wallsize, color):
@@ -66,7 +66,10 @@ def recolor(a, position, cellsize, wallsize, color):
     x_off = ((wallsize + cellsize) * ypos) + wallsize
     for x in range(cellsize):
         for y in range(cellsize):
-            a[x+x_off][y+y_off] = color
+            if a[x+x_off][y+y_off][0] == 255 or a[x+x_off][y+y_off][1] == 255: 
+                pass
+            else:
+                a[x+x_off][y+y_off] = color
 
 
 def move(a, pos1, pos2, cellsize, wallsize, neighbors_dict):
@@ -86,24 +89,26 @@ def move(a, pos1, pos2, cellsize, wallsize, neighbors_dict):
 
 
 def run(test_path, test_neighbors, cell, walls, size):
+    # Need to set starting position color
     a = init(size, walls, cell)
+    recolor(a, test_path[0], cell, walls, [0, 255, 0])
     for move_val in range(len(test_path)):
         if (move_val) == (len(test_path)-1):
             pass
         elif test_path[move_val-1] in test_neighbors[test_path[move_val]]:
             # Create Color
-            recolor(a, test_path[move_val], cell, walls, 50)
-            recolor(a, test_path[move_val-1], cell, walls, 100)
+            recolor(a, test_path[move_val], cell, walls, [50, 50, 50])
+            recolor(a, test_path[move_val-1], cell, walls, [100, 100, 100])
     
             move(a, test_path[move_val], test_path[move_val-1], cell, walls, test_neighbors)
             # This is for if you want to save an animation
             im = Image.fromarray(a)
-            im = im.convert('L')
-            # im.save(f"{move_val}\t{test_path[move_val]}-{test_path[move_val-1]}.jpg")
+            im = im.convert('RGB')
+            im.save(f"{move_val}.jpg")
     
             # Remove Color
-            recolor(a, test_path[move_val], cell, walls, 0)
-            recolor(a, test_path[move_val-1], cell, walls, 0)
+            recolor(a, test_path[move_val], cell, walls, [0, 0, 0])
+            recolor(a, test_path[move_val-1], cell, walls, [0, 0, 0])
     
         else:
             # If you have issues with weird looking mazes, the problem is here I think
@@ -115,21 +120,21 @@ def run(test_path, test_neighbors, cell, walls, size):
                     pass
                 else:
                     # Create Color
-                    recolor(a, test_path[move_val], cell, walls, 0)
-                    recolor(a, _, cell, walls, 0)
+                    recolor(a, test_path[move_val], cell, walls, [0, 0, 0])
+                    recolor(a, _, cell, walls, [0, 0, 0]) 
     
                     move(a, test_path[move_val], _, cell, walls, test_neighbors)
                     # This is for if you want to save an animation
                     im = Image.fromarray(a)
-                    im = im.convert('L')
-                     #im.save(f"{move_val}\t{test_path[move_val]}-{test_path[move_val-1]}.jpg")
+                    im = im.convert('RGB')
+                    im.save(f"{move_val}.jpg")
     
                     # Remove Color
-                    recolor(a, test_path[move_val], cell, walls, 0)
-                    recolor(a, _, cell, walls, 0)
+                    recolor(a, test_path[move_val], cell, walls, [0, 0, 0])
+                    recolor(a, _, cell, walls, [0, 0, 0])
                     break
     im = Image.fromarray(a)
-    im = im.convert('L')
+    im = im.convert('RGB')
     im.show()
 
 
