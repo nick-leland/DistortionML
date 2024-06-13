@@ -74,7 +74,7 @@ def generate(size, seed=None):
     # TODO determine the starting node randomly based on one of the four corners
     
     sort_list(maze_neighbors, maze_value)
-    return search(maze_neighbors, '0 0')
+    return search(maze_neighbors, '0 0'), maze_neighbors
 
 
 if __name__ == "__main__":
@@ -91,5 +91,6 @@ if __name__ == "__main__":
     # else:
     #     seed = int(input("Please give a number for the seed"))
     seed = None
-    print(generate(size, seed))
+    x, y = generate(size, seed)
+    print(x)
 
