@@ -88,7 +88,7 @@ def move(a, pos1, pos2, cellsize, wallsize, neighbors_dict):
         horizon_wall(a, pos1, pos2, cellsize, wallsize)
 
 
-def run(test_path, test_neighbors, cell, walls, size):
+def run(test_path, test_neighbors, cell, walls, size, name):
     # Need to set starting position color
     a = init(size, walls, cell)
     recolor(a, test_path[0], cell, walls, [0, 255, 0])
@@ -102,9 +102,9 @@ def run(test_path, test_neighbors, cell, walls, size):
     
             move(a, test_path[move_val], test_path[move_val-1], cell, walls, test_neighbors)
             # This is for if you want to save an animation
-            im = Image.fromarray(a)
-            im = im.convert('RGB')
-            im.save(f"{move_val}.jpg")
+            # im = Image.fromarray(a)
+            # im = im.convert('RGB')
+            # im.save(f"{move_val}.jpg")
     
             # Remove Color
             recolor(a, test_path[move_val], cell, walls, [0, 0, 0])
@@ -125,9 +125,9 @@ def run(test_path, test_neighbors, cell, walls, size):
     
                     move(a, test_path[move_val], _, cell, walls, test_neighbors)
                     # This is for if you want to save an animation
-                    im = Image.fromarray(a)
-                    im = im.convert('RGB')
-                    im.save(f"{move_val}.jpg")
+                    # im = Image.fromarray(a)
+                    # im = im.convert('RGB')
+                    # im.save(f"{move_val}.jpg")
     
                     # Remove Color
                     recolor(a, test_path[move_val], cell, walls, [0, 0, 0])
@@ -135,6 +135,7 @@ def run(test_path, test_neighbors, cell, walls, size):
                     break
     im = Image.fromarray(a)
     im = im.convert('RGB')
+    im.save(f"{name}.jpg")
     im.show()
 
 
@@ -145,5 +146,5 @@ if __name__ == "__main__":
     init_walls = 5
     init_cell = 50
 
-    run(test_path, test_neighbors, init_cell, init_walls, init_size)
+    run(test_path, test_neighbors, init_cell, init_walls, init_size, test)
         
