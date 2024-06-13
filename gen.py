@@ -4,6 +4,7 @@ from collections import *
 # TODO See if you can determine the recursive version of this algorithm
 def search(graph, node):
     """Basic Depth First Search Algorithm"""
+    print("Beginning Search function")
     order = []
     visited = []
     stack = deque()
@@ -23,10 +24,13 @@ def search(graph, node):
 
 def sort_list(list_dict, values_dict):
     """Sorts the list based on the corresponding values"""
+    print("Beginning sort_list function")
     out_list = []
 
     # print("Original 'list_dict' is", "\n", list_dict)
+    
     for item in [*list_dict.keys()]:
+        print(item)
         converted = [values_dict[x] for x in list_dict[item]]
         # TODO For the sake of learning, might be beneficial to not use the .sort() feature
         converted.sort()
@@ -38,6 +42,7 @@ def sort_list(list_dict, values_dict):
 def generate(size, seed=None):
     """Generates a size x size maze with a given seed
     Utilizes numpy random.default_rng for seed input"""
+    print("Beginning Generate function")
     # Create a random generator and then sets random values for each position
     if seed == None:
         rng = np.random.default_rng()

@@ -97,8 +97,8 @@ def run(test_path, test_neighbors, cell, walls, size, name):
             pass
         elif test_path[move_val-1] in test_neighbors[test_path[move_val]]:
             # Create Color
-            recolor(a, test_path[move_val], cell, walls, [50, 50, 50])
-            recolor(a, test_path[move_val-1], cell, walls, [100, 100, 100])
+            # recolor(a, test_path[move_val], cell, walls, [50, 50, 50])
+            # recolor(a, test_path[move_val-1], cell, walls, [100, 100, 100])
     
             move(a, test_path[move_val], test_path[move_val-1], cell, walls, test_neighbors)
             # This is for if you want to save an animation
@@ -107,8 +107,8 @@ def run(test_path, test_neighbors, cell, walls, size, name):
             # im.save(f"{move_val}.jpg")
     
             # Remove Color
-            recolor(a, test_path[move_val], cell, walls, [0, 0, 0])
-            recolor(a, test_path[move_val-1], cell, walls, [0, 0, 0])
+            # recolor(a, test_path[move_val], cell, walls, [0, 0, 0])
+            # recolor(a, test_path[move_val-1], cell, walls, [0, 0, 0])
     
         else:
             # If you have issues with weird looking mazes, the problem is here I think
@@ -120,8 +120,8 @@ def run(test_path, test_neighbors, cell, walls, size, name):
                     pass
                 else:
                     # Create Color
-                    recolor(a, test_path[move_val], cell, walls, [0, 0, 0])
-                    recolor(a, _, cell, walls, [0, 0, 0]) 
+                    # recolor(a, test_path[move_val], cell, walls, [0, 0, 0])
+                    # recolor(a, _, cell, walls, [0, 0, 0]) 
     
                     move(a, test_path[move_val], _, cell, walls, test_neighbors)
                     # This is for if you want to save an animation
@@ -130,8 +130,8 @@ def run(test_path, test_neighbors, cell, walls, size, name):
                     # im.save(f"{move_val}.jpg")
     
                     # Remove Color
-                    recolor(a, test_path[move_val], cell, walls, [0, 0, 0])
-                    recolor(a, _, cell, walls, [0, 0, 0])
+                    # recolor(a, test_path[move_val], cell, walls, [0, 0, 0])
+                    # recolor(a, _, cell, walls, [0, 0, 0])
                     break
     im = Image.fromarray(a)
     im = im.convert('RGB')
