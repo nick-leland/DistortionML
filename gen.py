@@ -39,34 +39,36 @@ def sort_list(list_dict, values_dict):
     # print("Final 'list_dict' is", "\n", list_dict)
     return out_list
 
-def generate(size, seed=None):
+def generate(size_x, size_y, seedin=None):
     """Generates a size x size maze with a given seed
     Utilizes numpy random.default_rng for seed input"""
     print("Beginning Generate function")
     # Create a random generator and then sets random values for each position
-    if seed == None:
+    if seedin == None:
         rng = np.random.default_rng()
     else:
-        rng = np.random.default_rng(seed=223)
-    x = np.zeros((size, size), dtype=np.int16)
-    maze_values = rng.random((size, size))
+        rng = np.random.default_rng(seed=seedin)
+    x = np.zeros((size_x, size_y), dtype=np.int16)
+    maze_values = rng.random((size_x, size_y))
 
     # Creates a list of all positions in the maze and sets their value equal to the random value
     maze_neighbors = {}
     maze_value = {}
-    zsize = size - 1
-    for x in range(size):
-        for y in range(size):
+    xsize = size_x - 1
+    ysize = size_y - 1
+    # This might need to be switched
+    for x in range(size_x):
+        for y in range(size_y):
     
             # Determines the neighbors by the current x,y coordinate
             neighbors = []
             if y != 0:
                 neighbors.append(f"{x} {y-1}")
-            if y != zsize:
+            if y != ysize:
                 neighbors.append(f"{x} {y+1}")
             if x != 0:
                 neighbors.append(f"{x-1} {y}")
-            if x != zsize:
+            if x != xsize:
                 neighbors.append(f"{x+1} {y}")
     
             # Adds the neighbors and values to the designated dictionary
@@ -87,7 +89,8 @@ if __name__ == "__main__":
     # TODO Explore a maze that is not a square
     
     # size = int(input("What size of maze would you like to generate? \n"))
-    size = 5
+    sizex = 5
+    sizey = 8
 
     # seedq = input("Do you want a seed? Please answer Yes or No \n")[0]
     # seedq = seedq.title()
@@ -96,6 +99,6 @@ if __name__ == "__main__":
     # else:
     #     seed = int(input("Please give a number for the seed"))
     seed = None
-    x, y = generate(size, seed)
+    x, y = generate(sizex, sizey, seed)
     print(x)
 
