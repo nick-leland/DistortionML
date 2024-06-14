@@ -2,25 +2,26 @@ from PIL import Image
 import numpy as np
 
 
-def init(size, walls, cell):
+def init(size_x, size_y, walls, cell):
     """Sets the initial numpy array"""
     # TODO There is a probably a better way to scale these, look into it.
-    pixels = (size * cell) + (walls * (size+1))
-    print(f"Image resolution is {pixels}x{pixels}")
+    pixels_y = (size_x * cell) + (walls * (size_x+1))
+    pixels_x = (size_y * cell) + (walls * (size_y+1))
+    print(f"Image resolution is {pixels_x}x{pixels_y}")
     
     # a = np.zeros((pixels, pixels), dtype=np.uint8)
     # Change to accomodate RGB
-    a = np.zeros((pixels, pixels, 3), dtype=np.uint8)
+    a = np.zeros((pixels_x, pixels_y, 3), dtype=np.uint8)
     
     # Vertical walls
-    for x in range(pixels):
-        for y in range(pixels):
+    for y in range(pixels_y):
+        for x in range(pixels_x):
             if (x % (cell + walls)) < walls or (y % (cell + walls)) < walls:
                 a[x][y] = [255, 255, 255]
                  
     # Horizontal walls
-    for y in range(pixels):
-        for x in range(pixels):
+    for x in range(pixels_x):
+        for y in range(pixels_y):
             if (x % (cell + walls)) < walls or (y % (cell + walls)) < walls:
                 a[x][y] = [255, 255, 255]
     return a
@@ -88,10 +89,11 @@ def move(a, pos1, pos2, cellsize, wallsize, neighbors_dict):
         horizon_wall(a, pos1, pos2, cellsize, wallsize)
 
 
-def run(test_path, test_neighbors, cell, walls, size, name):
+def run(test_path, test_neighbors, cell, walls, size_x, size_y, name):
     # Need to set starting position color
-    a = init(size, walls, cell)
-    recolor(a, test_path[0], cell, walls, [0, 255, 0])
+    a = init(size_x, size_y, walls, cell)
+    # Colors the Maze Start Green
+    # recolor(a, test_path[0], cell, walls, [0, 255, 0])
     for move_val in range(len(test_path)):
         if (move_val) == (len(test_path)-1):
             pass
@@ -140,11 +142,14 @@ def run(test_path, test_neighbors, cell, walls, size, name):
 
 
 if __name__ == "__main__":
-    test_path = ['0 0', '0 1', '0 2', '1 2', '2 2', '2 3', '3 3', '3 4', '4 4', '4 3', '4 2', '4 1', '4 0', '3 0', '2 0', '3 1', '2 4', '1 4', '0 4', '3 2', '2 1', '1 3', '0 3', '1 1', '1 0']
-    test_neighbors = {'0 0': ['0 1', '1 0'], '0 1': ['0 2', '0 0', '1 1'], '0 2': ['0 1', '1 2', '0 3'], '0 3': ['0 2', '0 4', '1 3'], '0 4': ['1 4', '0 3'], '1 0': ['0 0', '2 0', '1 1'], '1 1': ['0 1', '1 2', '2 1', '1 0'], '1 2': ['0 2', '1 1', '2 2', '1 3'], '1 3': ['2 3', '1 4', '1 2', '0 3'], '1 4': ['0 4', '1 3', '2 4'], '2 0': ['3 0', '2 1', '1 0'], '2 1': ['2 0', '1 1', '2 2', '3 1'], '2 2': ['2 3', '3 2', '1 2', '2 1'], '2 3': ['2 2', '3 3', '1 3', '2 4'], '2 4': ['2 3', '1 4', '3 4'], '3 0': ['4 0', '2 0', '3 1'], '3 1': ['4 1', '3 0', '3 2', '2 1'], '3 2': ['2 2', '4 2', '3 3', '3 1'], '3 3': ['2 3', '3 4', '3 2', '4 3'], '3 4': ['4 4', '3 3', '2 4'], '4 0': ['4 1', '3 0'], '4 1': ['4 0', '4 2', '3 1'], '4 2': ['4 1', '3 2', '4 3'], '4 3': ['4 4', '4 2', '3 3'], '4 4': ['3 4', '4 3']}
-    init_size = 5
+    # test_path = ['0 0', '0 1', '0 2', '1 2', '2 2', '2 3', '3 3', '3 4', '4 4', '4 3', '4 2', '4 1', '4 0', '3 0', '2 0', '3 1', '2 4', '1 4', '0 4', '3 2', '2 1', '1 3', '0 3', '1 1', '1 0']
+    # test_neighbors = {'0 0': ['0 1', '1 0'], '0 1': ['0 2', '0 0', '1 1'], '0 2': ['0 1', '1 2', '0 3'], '0 3': ['0 2', '0 4', '1 3'], '0 4': ['1 4', '0 3'], '1 0': ['0 0', '2 0', '1 1'], '1 1': ['0 1', '1 2', '2 1', '1 0'], '1 2': ['0 2', '1 1', '2 2', '1 3'], '1 3': ['2 3', '1 4', '1 2', '0 3'], '1 4': ['0 4', '1 3', '2 4'], '2 0': ['3 0', '2 1', '1 0'], '2 1': ['2 0', '1 1', '2 2', '3 1'], '2 2': ['2 3', '3 2', '1 2', '2 1'], '2 3': ['2 2', '3 3', '1 3', '2 4'], '2 4': ['2 3', '1 4', '3 4'], '3 0': ['4 0', '2 0', '3 1'], '3 1': ['4 1', '3 0', '3 2', '2 1'], '3 2': ['2 2', '4 2', '3 3', '3 1'], '3 3': ['2 3', '3 4', '3 2', '4 3'], '3 4': ['4 4', '3 3', '2 4'], '4 0': ['4 1', '3 0'], '4 1': ['4 0', '4 2', '3 1'], '4 2': ['4 1', '3 2', '4 3'], '4 3': ['4 4', '4 2', '3 3'], '4 4': ['3 4', '4 3']}
+    test_path = ['0 0', '0 1', '0 2', '0 3', '0 4', '1 4', '2 4', '2 3', '3 3', '4 3', '5 3', '6 3', '7 3', '7 4', '7 2', '7 1', '6 1', '6 0', '5 0', '4 0', '4 1', '3 1', '2 1', '2 0', '3 0', '5 1', '7 0', '6 4', '6 2', '5 2', '5 4', '4 2', '4 4', '3 2', '2 2', '3 4', '1 3', '1 2', '1 1', '1 0']
+    test_neighbors = {'0 0': ['0 1', '1 0'], '0 1': ['0 2', '0 0', '1 1'], '0 2': ['0 1', '0 3', '1 2'], '0 3': ['0 4', '0 2', '1 3'], '0 4': ['0 3', '1 4'], '1 0': ['0 0', '2 0', '1 1'], '1 1': ['0 1', '2 1', '1 0', '1 2'], '1 2': ['2 2', '0 2', '1 3', '1 1'], '1 3': ['2 3', '0 3', '1 4', '1 2'], '1 4': ['2 4', '0 4', '1 3'], '2 0': ['3 0', '2 1', '1 0'], '2 1': ['3 1', '2 2', '2 0', '1 1'], '2 2': ['2 3', '2 1', '3 2', '1 2'], '2 3': ['3 3', '2 4', '2 2', '1 3'], '2 4': ['2 3', '3 4', '1 4'], '3 0': ['3 1', '4 0', '2 0'], '3 1': ['4 1', '3 0', '2 1', '3 2'], '3 2': ['3 3', '3 1', '4 2', '2 2'], '3 3': ['2 3', '3 4', '4 3', '3 2'], '3 4': ['3 3', '4 4', '2 4'], '4 0': ['5 0', '4 1', '3 0'], '4 1': ['3 1', '4 2', '4 0', '5 1'], '4 2': ['5 2', '4 1', '4 3', '3 2'], '4 3': ['3 3', '5 3', '4 2', '4 4'], '4 4': ['3 4', '5 4', '4 3'], '5 0': ['6 0', '4 0', '5 1'], '5 1': ['5 2', '5 0', '4 1', '6 1'], '5 2': ['5 3', '4 2', '5 1', '6 2'], '5 3': ['6 3', '5 2', '5 4', '4 3'], '5 4': ['5 3', '4 4', '6 4'], '6 0': ['5 0', '6 1', '7 0'], '6 1': ['6 0', '5 1', '7 1', '6 2'], '6 2': ['6 3', '5 2', '7 2', '6 1'], '6 3': ['5 3', '7 3', '6 4', '6 2'], '6 4': ['6 3', '7 4', '5 4'], '7 0': ['6 0', '7 1'], '7 1': ['7 2', '6 1', '7 0'], '7 2': ['7 3', '7 1', '6 2'], '7 3': ['6 3', '7 4', '7 2'], '7 4': ['7 3', '6 4']}
+    init_size_x = 8
+    init_size_y = 5
     init_walls = 5
     init_cell = 50
 
-    run(test_path, test_neighbors, init_cell, init_walls, init_size, test)
+    run(test_path, test_neighbors, init_cell, init_walls, init_size_x, init_size_y, "test")
         
