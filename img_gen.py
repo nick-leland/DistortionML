@@ -89,7 +89,9 @@ def move(a, pos1, pos2, cellsize, wallsize, neighbors_dict):
         horizon_wall(a, pos1, pos2, cellsize, wallsize)
 
 
-def run(test_path, test_neighbors, cell, walls, size_x, size_y, name):
+def run(test_path, test_neighbors, cell, walls, size_x, size_y, name=None):
+    if name == None:
+        name = str(size_x) + 'x' +  str(size_y)
     # Need to set starting position color
     a = init(size_x, size_y, walls, cell)
     # Colors the Maze Start Green
@@ -151,5 +153,5 @@ if __name__ == "__main__":
     init_walls = 5
     init_cell = 50
 
-    run(test_path, test_neighbors, init_cell, init_walls, init_size_x, init_size_y, "test")
+    run(test_path, test_neighbors, init_cell, init_walls, init_size_x, init_size_y)
         
