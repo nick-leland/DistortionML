@@ -18,7 +18,7 @@ if __name__ == "__main__":
     cell = 10
 
     x, y = generate(sizex, sizey)
-    run(x, y, cell, walls, sizex, sizey, f'{sizex}x{sizey}')
+    run(x, y, cell, walls, sizex, sizey, f'{sizex}x{sizey}', save="show")
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"Elapsed time: {elapsed_time:.6f} seconds")

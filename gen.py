@@ -30,18 +30,19 @@ def sort_list(list_dict, values_dict, debug=None):
     if debug == True:
         print("Beginning sort_list function")
     out_list = []
-
-    # print("Original 'list_dict' is", "\n", list_dict)
-    
-    for item in [*list_dict.keys()]:
+    for item in list_dict.keys():
         if debug == True:
             print(item)
-        converted = [values_dict[x] for x in list_dict[item]]
-        # TODO For the sake of learning, might be beneficial to not use the .sort() feature
-        converted.sort()
-        temp = [[*values_dict.keys()][[*values_dict.values()].index(x)] for x in converted]
-        list_dict[item] = temp
-    # print("Final 'list_dict' is", "\n", list_dict)
+        # Current code under revision
+        # converted = [values_dict[x] for x in list_dict[item]]
+        # converted.sort()
+        # temp = [[*values_dict.keys()][[*values_dict.values()].index(x)] for x in converted]
+        # list_dict[item] = temp
+
+        # Trial Code
+        converted = sorted(list_dict[item], key=lambda x: values_dict[x])
+        list_dict[item] = converted
+
     if debug == True:
         print("Finished sort_list function")
     return out_list

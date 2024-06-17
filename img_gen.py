@@ -89,11 +89,12 @@ def move(a, pos1, pos2, cellsize, wallsize, neighbors_dict):
         horizon_wall(a, pos1, pos2, cellsize, wallsize)
 
 
-def run(test_path, test_neighbors, cell, walls, size_x, size_y, name=None):
+def run(test_path, test_neighbors, cell, walls, size_x, size_y, name=None, in_array=None, save=False):
     if name == None:
         name = str(size_x) + 'x' +  str(size_y)
+    if in_array == None:
+        a = init(size_x, size_y, walls, cell)
     # Need to set starting position color
-    a = init(size_x, size_y, walls, cell)
     # Colors the Maze Start Green
     # recolor(a, test_path[0], cell, walls, [0, 255, 0])
     for move_val in range(len(test_path)):
@@ -137,10 +138,14 @@ def run(test_path, test_neighbors, cell, walls, size_x, size_y, name=None):
                     # recolor(a, test_path[move_val], cell, walls, [0, 0, 0])
                     # recolor(a, _, cell, walls, [0, 0, 0])
                     break
-    im = Image.fromarray(a)
-    im = im.convert('RGB')
-    im.save(f"{name}.jpg")
-    im.show()
+    if save == True:
+        im = Image.fromarray(a)
+        im = im.convert('RGB')
+        im.save(f"{name}.jpg")
+    if save == 'show':
+        im = Image.fromarray(a)
+        im = im.convert('RGB')
+        im.show()
 
 
 if __name__ == "__main__":
@@ -153,5 +158,5 @@ if __name__ == "__main__":
     init_walls = 5
     init_cell = 50
 
-    run(test_path, test_neighbors, init_cell, init_walls, init_size_x, init_size_y)
+    run(test_path, test_neighbors, init_cell, init_walls, init_size_x, init_size_y, save='show')
         
