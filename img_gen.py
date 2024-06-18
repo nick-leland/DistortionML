@@ -104,9 +104,6 @@ def run(test_path, test_neighbors, cell, walls, size_x, size_y, name=None, in_ar
     # Colors the Maze Start Green
     # recolor(a, test_path[0], cell, walls, [0, 255, 0])
     for move_val in range(len(test_path)):
-        print("Weird Error Starts here")
-        print(test_path)
-        print(move_val)
         if (move_val) == (len(test_path)-1):
             pass
         elif test_path[move_val-1] in test_neighbors[test_path[move_val]]:
