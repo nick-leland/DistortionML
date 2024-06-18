@@ -89,15 +89,24 @@ def move(a, pos1, pos2, cellsize, wallsize, neighbors_dict):
         horizon_wall(a, pos1, pos2, cellsize, wallsize)
 
 
-def run(test_path, test_neighbors, cell, walls, size_x, size_y, name=None, in_array=None, save=False):
+def run(test_path, test_neighbors, cell, walls, size_x, size_y, name=None, in_array='No', save=False):
     if name == None:
         name = str(size_x) + 'x' +  str(size_y)
-    if in_array == None:
+    if isinstance(in_array, np.ndarray) != True:
         a = init(size_x, size_y, walls, cell)
+    if isinstance(in_array, np.ndarray) == True:
+        a = in_array
+        print("Loaded Array")
+
+
+
     # Need to set starting position color
     # Colors the Maze Start Green
     # recolor(a, test_path[0], cell, walls, [0, 255, 0])
     for move_val in range(len(test_path)):
+        print("Weird Error Starts here")
+        print(test_path)
+        print(move_val)
         if (move_val) == (len(test_path)-1):
             pass
         elif test_path[move_val-1] in test_neighbors[test_path[move_val]]:
