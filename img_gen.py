@@ -5,8 +5,8 @@ import numpy as np
 def init(size_x, size_y, walls, cell):
     """Sets the initial numpy array"""
     # TODO There is a probably a better way to scale these, look into it.
-    pixels_y = (size_x * cell) + (walls * (size_x+1))
-    pixels_x = (size_y * cell) + (walls * (size_y+1))
+    pixels_x = (size_x * cell) + (walls * (size_x+1))
+    pixels_y = (size_y * cell) + (walls * (size_y+1))
     print(f"Image resolution is {pixels_x}x{pixels_y}")
     
     # a = np.zeros((pixels, pixels), dtype=np.uint8)
