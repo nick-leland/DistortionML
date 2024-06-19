@@ -2,12 +2,12 @@ from PIL import Image
 import numpy as np
 
 
-def init(size_x, size_y, walls, cell):
+def init(size_x, size_y, walls, cell, max_y):
     """Sets the initial numpy array"""
     # TODO There is a probably a better way to scale these, look into it.
-    pixels_x = (size_x * cell) + (walls * (size_x+1))
-    pixels_y = (size_y * cell) + (walls * (size_y+1))
-    print(f"Image resolution is {pixels_x}x{pixels_y}")
+    pixels_y = (size_x * cell) + (walls * (size_x+1))
+    pixels_x = (size_y * cell) + (walls * (size_y+1))
+    print(f"Image resolution is {pixels_y}x{pixels_x}")
     
     # a = np.zeros((pixels, pixels), dtype=np.uint8)
     # Change to accomodate RGB
@@ -24,11 +24,12 @@ def init(size_x, size_y, walls, cell):
         for y in range(pixels_y):
             if (x % (cell + walls)) < walls or (y % (cell + walls)) < walls:
                 a[x][y] = [255, 255, 255]
+
     return a
 
 
 # TODO Both of these functions split the positions accordingly, this can probably be condensed.
-# Recolor also does something similar, maybe use args?
+# Recolor also does somet[print(cell_size, wall_size, (16 * cell_size + (16 + 1) * wall_size)) for cell_size in range(1, 100) for wall_size in range(1, 100) if (16 * cell_size + (16 + 1) * wall_size) % 2 == 0 and (16 * cell_size + (16 + 1) * wall_size) == 1280]hing similar, maybe use args?
 def horizon_wall(a, pos1, pos2, cellsize, wallsize):
     pos1 = pos1.split(" ")
     pos2 = pos2.split(" ")
@@ -89,7 +90,7 @@ def move(a, pos1, pos2, cellsize, wallsize, neighbors_dict):
         horizon_wall(a, pos1, pos2, cellsize, wallsize)
 
 
-def run(test_path, test_neighbors, cell, walls, size_x, size_y, name=None, in_array='No', save=False):
+def run(test_path, test_neighbors, cell, walls, size_x, size_y, max_y, name=None, in_array='No', save=False):
     if name == None:
         name = str(size_x) + 'x' +  str(size_y)
     if isinstance(in_array, np.ndarray) != True:
@@ -144,6 +145,34 @@ def run(test_path, test_neighbors, cell, walls, size_x, size_y, name=None, in_ar
                     # recolor(a, test_path[move_val], cell, walls, [0, 0, 0])
                     # recolor(a, _, cell, walls, [0, 0, 0])
                     break
+    # Accounts for the proper pixel size by adding extra pixel in the middle if needed
+    # Adjust for maximum Y Value
+    adjustment = (max_y - a.shape[0]) // 2
+    if adjustment > 0:
+        # a = np.repeat(a, [1+adjustment, 1+adjustment], axis=0)
+        first = a[0, :, :]
+        first = first.reshape(1, 1280, 3)
+        last = a[-1, :, :]
+        last = last.reshape(1, 1280, 3)
+
+        for _ in range(adjustment):
+            a = np.concatenate((first, a, last), axis=0)
+        print()
+        print(f"a.shape is {a.shape}")
+        print(f"max_y is {max_y}")
+
+
+    adjustment = (max_y - a.shape[0]) % 2
+    if adjustment > 0:
+        loc = (a.shape[0]) // 2
+        row = a[loc]
+        a = np.insert(a, loc, row, axis=0)
+        if a.shape[0] != max_y:
+            print("ERROR WITH SHAPE")
+            return
+
+
+
     if save == True:
         im = Image.fromarray(a)
         im = im.convert('RGB')
