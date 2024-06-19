@@ -63,9 +63,9 @@ if __name__ == "__main__":
     for _ in range(int(input("How many mazes would you like to create"))):
         size_x = 16 * (_+1)
         if size_x > target_x:
-            exit()
+            pass
         size_y = int((size_x * 9) / 16)
-        pixel_combinations = [[cell_size, wall_size] for cell_size in range(1, 100000) for wall_size in range(1, 100) if (16 * cell_size + (16 + 1) * wall_size) == 1280 and cell_size > wall_size]
+        pixel_combinations = [[cell_size, wall_size] for cell_size in range(1, 100000) for wall_size in range(1, 100) if (size_x * cell_size + (size_x + 1) * wall_size) == 1280 and cell_size > wall_size]
 
         counter = 0
         for combo in pixel_combinations:

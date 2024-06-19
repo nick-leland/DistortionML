@@ -146,7 +146,10 @@ def run(test_path, test_neighbors, cell, walls, size_x, size_y, max_y, name=None
                     # recolor(a, _, cell, walls, [0, 0, 0])
                     break
     # Accounts for the proper pixel size by adding extra pixel in the middle if needed
+
+    # QUARANTINE
     # Adjust for maximum Y Value
+    """
     adjustment = (max_y - a.shape[0]) // 2
     if adjustment > 0:
         # a = np.repeat(a, [1+adjustment, 1+adjustment], axis=0)
@@ -170,6 +173,7 @@ def run(test_path, test_neighbors, cell, walls, size_x, size_y, max_y, name=None
         if a.shape[0] != max_y:
             print("ERROR WITH SHAPE")
             return
+            """
 
 
 
