@@ -1,85 +1,35 @@
-# MazeSolverML
-Summer of Shipping project to incorporate machine learning capabilities to solve mazes by learning maze generating patterns.
+# Distortion ML
+A project about the creation and deployment of a Machine Learning Model to first recognize and then reverse image distortions.
 
-# Project: Interactive AI Maze Solver
+# What is it?
+The goal of this project is to work on model creation and fine tuning.  The end result is a deployable machine learning model that detects if an image has had any distortional effects applied to it, and then attempts to reverse those effects.  
 
-## 1. Maze Generation Algorithm
-- **Basic Maze Aspects**
-  - Walls
-  - Start Point
-  - End Point
-- Seed Capabilities
-- **Multiple Layouts**?
-- **Generation Limitations**:
-  - Need to define the constraints for maze generation
-- **Target Language**
-  - Python for Demo and initial design
-  - Rust / C++ for Deployment and optimization 
-- **Test Cases**
-  - Utilize the seeding system to establish defined test cases
+Take a look at the image below for a better example of this process. First we will use a classification model to determine if any distortional effects are actually taking place.  After this occurs, we can then run the distortion model on the image to attempt to reverse any distortional effects.  
+<p align="center">
+<img width="909" alt="shapes at 24-06-19 15 03 19" src="https://github.com/nick-leland/DistortionML/assets/148659884/0fd16956-dae7-404f-8fa2-e030e0a4339f">
+</p>
 
-## 2. Machine Learning Model
-- **Generation Algorithm**: 
-  - **Generates data with solutions**
-  - **Generates Data Without Solutions**
-- **Languages**: Python/Jax
+<img align="right" src="https://github.com/nick-leland/DistortionML/assets/148659884/7948caf6-c276-44f5-a56a-61654f9f873d">
+&emsp;The inspiration for this project was found when I was initially working on a project to generate images of mazes for use in machine learning.  One blog that I read discussed that you could then apply image manipulation techniques on the mazes to increase the mazes difficulty.  This utilized a simple map effect where you would map an image onto a circle.  I am working on a tool that will apply image distortion based on something like a contour map of a gradient.  My goal is to train the model on what distortion techniques are used based on the input of an image.  Once it can accurately predict the equation, the program would apply the inverse to restore the image.  
 
-## 3. User-Generated Mazes
-- **Program to Allow Users to Create Mazes**:
-  - Should be deployable but think about this later on
-    - Maybe use something scaleable like Spark?
-- **Users need some way to be able to create their own mazes**
-  - The easier it is to accomplish this the better, more creativity is beneficial I believe
-- **Using Image Recognition**:
-  - Use MS Paint for image recognition to construct a maze?
-  - Maybe a direct GPT pipeline?
-- **Database Creation**:
-  - Create a database of "User Generated Mazes"
 
-## 4. Model Fine-Tuning
-- **Statement**:
-  - Most people are not maze generation algorithms (Inception analogy: maze that takes X time to solve)
-- **Objective**:
-  - Model identifies common "human" input mazes and solves them blindly as a case (comparable to a policy algorithm)
-- **Fine-Tuning Process**:
-  - Fine-tune model on user-generated mazes
 
-## 5. Visualization and Deployment
-- **Visualization**:
-  - Visualization to run on deployment (e.g., Think Turtles "racing" the maze)
-- **Demo/Testing**:
-  - Languages: Python, Rust, C++
-  - Deployment considerations
-- **Test Cases**:
-  - Seed a classic test case opportunity
+&emsp;I read about a direct use case where software was used to reverse an image transformation to identify a criminal.  The criminal used a spiral effect to distort his face and attempt to hide behind anonyminity.  The goal is to produce a tool that will do something similar using machine learning techniques.  
 
-## 6. Research Points
-- **Maze Generation**:
-  - Study various maze generation techniques
-- **Pathfinding Algorithms**:
-  - Explore different algorithms for solving mazes
-- **Rust**:
-  - Consider using Rust for performance-critical parts
-- **Deployability**:
-  - Plan for how to deploy the solution
-  - Maybe use Apache Spark to get experience in larger deployments
-- **Jax/PyTorch**:
-  - Use these frameworks for machine learning model training
+## How will this be achieved? 
+This project will be broken down into various different portions.
+1. Generate an initial dataset that can be used for classification trianing
+2. Create a program that will randomly apply distortion effects to images
+3. Apply these distortion effects to a subset of images that increase with difficulty.  The current plan is to go from Grids -> Mazes -> Photos.  Will likely need redefining later.
+4. Look into deployment for hosting the model.
+5. Allow for users to apply the distortional effects themselves, and then directly apply the model to them after.
+6. Web deployment of user effects.
 
----
+## Stack
+This is a Python project, many things will take place within python scripts and jupyter notebook files (although I much prefer base python scripts). 
+I will be working primarily with Numpy and Pytorch, but would also like to begin to work with JAX as well.  I am still very much in the early phases of ML understanding so there will be many novice aspects to this project.
 
-# Action Items
-1. **Maze Generation**:
-   - Develop and implement algorithms with specified capabilities and limitations.
-2. **Data Collection**:
-   - Gather user-generated mazes and create a database.
-3. **Model Training**:
-   - Train and fine-tune the model using both generated and user-provided mazes.
-4. **Deployment**:
-   - Plan and execute the deployment of the model and visualization tools.
-5. **Research and Development**:
-   - Continue research on maze generation, pathfinding algorithms, and deployability.
-
-# Current Problems
-- How do we define a _move_ in the maze?
-
+## Made for Summer of Shipping / Nights and Weekends via Buildspace!
+<p align="center">
+<img width="909" alt="shapes at 24-06-19 15 03 19" src="https://github.com/nick-leland/DistortionML/assets/148659884/a7dea974-37dc-41c2-af58-923cbe4012ef">
+</p>
