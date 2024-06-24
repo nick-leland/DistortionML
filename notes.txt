@@ -46,6 +46,10 @@ It could be useful to do this in steps, that way we can animate the action of th
 Check this stuff out for more information:
 COMPUTATIONAL PHOTOGRAPHY AND INTRODUCTION TO COMPUTER VISION: https://alumni.media.mit.edu/~maov/classes/comp_photo_vision08f/syllabus.html
 Calculus 16.9 Gradient Vector Fields : https://www.youtube.com/watch?v=8_jqW5h9QnE
+Cornell cs5670 lectures : https://www.cs.cornell.edu/courses/cs5670/2019sp/lectures/lectures.html
+
 
 Need to find some information on computer vision.  The goal is to apply movement to pixels in order to create certain effects. 
+What is happening in a "bulge" image transformation? 
  
+
