@@ -2,35 +2,38 @@ from PIL import Image
 import numpy as np
 
 
-def init(size_x, size_y, walls, cell, max_y):
+def init(size_x, size_y, walls, cell, max_y=0, wall_color=[255, 255, 255], cell_color=[0, 0, 0]):
     """Sets the initial numpy array"""
     # TODO There is a probably a better way to scale these, look into it.
     pixels_y = (size_x * cell) + (walls * (size_x+1))
     pixels_x = (size_y * cell) + (walls * (size_y+1))
     print(f"Image resolution is {pixels_y}x{pixels_x}")
     
-    # a = np.zeros((pixels, pixels), dtype=np.uint8)
-    # Change to accomodate RGB
-    a = np.zeros((pixels_x, pixels_y, 3), dtype=np.uint8)
+    # Creates array with each RGB Layer and then combines them into array a
+    x = np.full((pixels_x, pixels_y), cell_color[0], dtype=np.uint8)
+    y = np.full((pixels_x, pixels_y), cell_color[1], dtype=np.uint8)
+    z = np.full((pixels_x, pixels_y), cell_color[2], dtype=np.uint8)
+    a = np.stack((x, y, z), axis=-1, dtype=np.uint8)
+
     
     # Vertical walls
     for y in range(pixels_y):
         for x in range(pixels_x):
             if (x % (cell + walls)) < walls or (y % (cell + walls)) < walls:
-                a[x][y] = [255, 255, 255]
+                a[x][y] = wall_color
                  
     # Horizontal walls
     for x in range(pixels_x):
         for y in range(pixels_y):
             if (x % (cell + walls)) < walls or (y % (cell + walls)) < walls:
-                a[x][y] = [255, 255, 255]
+                a[x][y] = wall_color
 
     return a
 
 
 # TODO Both of these functions split the positions accordingly, this can probably be condensed.
-# Recolor also does somet[print(cell_size, wall_size, (16 * cell_size + (16 + 1) * wall_size)) for cell_size in range(1, 100) for wall_size in range(1, 100) if (16 * cell_size + (16 + 1) * wall_size) % 2 == 0 and (16 * cell_size + (16 + 1) * wall_size) == 1280]hing similar, maybe use args?
-def horizon_wall(a, pos1, pos2, cellsize, wallsize):
+# Recolor also does something similar, maybe use args?
+def horizon_wall(a, pos1, pos2, cellsize, wallsize, cell_color=[0, 0, 0]):
     pos1 = pos1.split(" ")
     pos2 = pos2.split(" ")
     y1 = int(pos1[1])
@@ -42,10 +45,10 @@ def horizon_wall(a, pos1, pos2, cellsize, wallsize):
     y_off = ((wallsize + cellsize) * xpos) + wallsize
     for x in range(wallsize):
         for y in range(cellsize):
-            a[x+x_off][y+y_off] = [0, 0, 0]   
+            a[x+x_off][y+y_off] = cell_color
  
 
-def vertical_wall(a, pos1, pos2, cellsize, wallsize):
+def vertical_wall(a, pos1, pos2, cellsize, wallsize, cell_color=[0, 0, 0]):
     pos1 = pos1.split(" ")
     pos2 = pos2.split(" ")
     x1 = int(pos1[0])
@@ -57,7 +60,7 @@ def vertical_wall(a, pos1, pos2, cellsize, wallsize):
     x_off = ((wallsize + cellsize) * ypos) + wallsize
     for y in range(wallsize):
         for x in range(cellsize):
-            a[x+x_off][y+y_off] = [0, 0, 0]   
+            a[x+x_off][y+y_off] = cell_color
 
 
 def recolor(a, position, cellsize, wallsize, color):
