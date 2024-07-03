@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image
 from img_gen import init 
-from gen import generate
+from dfs_generation import generate
 import time
 
 if __name__ == "__main__":

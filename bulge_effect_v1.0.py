@@ -1,6 +1,8 @@
 import numpy as np
 from PIL import Image
 
+# This was one of my first attempts at writing this but caused too much ghosting on the final image converting to polar and back
+
 def polar_transform(x, y, warp_point_x, warp_point_y, a=2, b=2.5):
     r = np.sqrt(((x - warp_point_x) ** 2) + ((y - warp_point_y) ** 2))
     theta = np.arctan2(y - warp_point_y, x - warp_point_x)
@@ -45,14 +47,13 @@ def distort_generation(I, factora, factorb, posx=0.5, posy=0.5):
     return distort
 
 
-def main(image, factor=1, generate=False, posx=0.5, posy=0.5, save=False, show=True):
+def main(image, factor=1, generate=False, posx=0.5, posy=0.5, save=False, show=False, factora=0, factorb=0):
     # posx, posy = 0.5, 0.5
-    I = np.asarray(Image.open())
+    I = np.asarray(Image.open(image))
     print(f"I Shape is {I.shape}")
 
     if generate == True:
         max_factor = 1
-        factora, factorb = 0, 0
         while (factora < max_factor) or (factorb < max_factor):
             print(f"Factor is {round(factor, 3)}")
             factora += 0.001
@@ -80,5 +81,8 @@ def main(image, factor=1, generate=False, posx=0.5, posy=0.5, save=False, show=T
 
 
 if __name__ == "__main__":
-    main('15x15_1_10g.jpg', generate=True)
+    print("This script can also be used to generate images in bulk.  Please edit main function for more information")
+    image = input("Please give the file path to the image that will be distorted\n")
+    factor=0.01 * int(input("Please give a factor number (0-100)\n"))
+    main(image, generate=False, show=True, factora=factor, factorb=factor)
 

@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from os import path
-from gen import generate
+from dfs_generation import generate
 from img_gen import init, run
 from PIL import Image
 

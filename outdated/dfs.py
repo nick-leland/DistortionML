@@ -2,6 +2,8 @@ import collections
 from collections import *
 import numpy as np
 
+print("This program demonstrates generation of a depth first search solution")
+
 def dfs(graph, node):
     order = []
     visited = []
