@@ -164,5 +164,6 @@ cython_debug/
 # Dataset generation
 data/grid/
 data/maze/
+data/output/
 effect_output
 backup
