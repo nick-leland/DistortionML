@@ -11,7 +11,7 @@ from PIL import Image
 
 # Target image size should be around this? 
 
-def maze_grid_generation(size_x, size_y, walls, cell, max_y, counter):
+def maze_grid_generation(size_x, size_y, walls, cell, max_y, counter, gridonly=False):
     """Creates mazes and grids that both match a range of pixel prospects"""
     # Creates a folder for the type of data it's generating 
     # In this case Mazes and Grids which will use the same pixel information
@@ -26,13 +26,14 @@ def maze_grid_generation(size_x, size_y, walls, cell, max_y, counter):
     grid.save(f"grid/{size_x}_x_{size_y}_{walls}_{cell}g.jpg")
     # grid.show()
 
-    run(path, neighbors, cell, walls, size_x, size_y, max_y, in_array=a, save=False)
+    if gridonly == False:
+        run(path, neighbors, cell, walls, size_x, size_y, max_y, in_array=a, save=False)
 
-    maze = Image.fromarray(a)
-    maze = maze.convert('RGB')
-    os.makedirs("maze", exist_ok=True)
-    maze.save(f"maze/{size_x}_x_{size_y}_{walls}_{cell}_{counter}m.jpg")
-    # maze.show()
+        maze = Image.fromarray(a)
+        maze = maze.convert('RGB')
+        os.makedirs("maze", exist_ok=True)
+        maze.save(f"maze/{size_x}_x_{size_y}_{walls}_{cell}_{counter}m.jpg")
+        # maze.show()
 
 
 # Image generation should be configured, now just need to setup the maze generation
@@ -45,9 +46,11 @@ if __name__ == "__main__":
     ratio_x, ratio_y = 16, 9
     target_x, target_y = 1280, 720
 
+    # We increased to 750/650 to create more mazes.
 
-    max_y = 734
-    min_y = 727
+    max_y = 750
+    # min_y = 727
+    min_y = 650
     # Target is 720, range of + 14 pixels
     tolerance = max_y - target_y
     
@@ -106,93 +109,7 @@ if __name__ == "__main__":
         for x in range(runs):
             print(f"Making a maze with the following:\nX Size = {combinations[_][0]}\nY Size = {combinations[_][1]}\nWall Size = {combinations[_][2]}\nCell Size = {combinations[_][3]}")
             # I'm thinking of reformating this to instead be within the above loop.
-            maze_grid_generation(combinations[_][0], combinations[_][1], combinations[_][2], combinations[_][3], max_y, x)
+            maze_grid_generation(combinations[_][0], combinations[_][1], combinations[_][2], combinations[_][3], max_y, x, gridonly=True)
             print(f"""Generated Maze-Grid '{combinations[_][0]}_x_{combinations[_][1]}_{combinations[_][2]}_{combinations[_][3]}.jpg'""")
-
-
-
-    # The code here uses a normal distribution, the downside is that the images will never be the same size lol
-    """
-    #Target Size for Images
-    x, y = 1280, 720
-
-    # Using this as minimum to keep aspect ratio
-    min_combo_x, min_combo_y = 2, 1
-    # Formula for maximum cells ((x-1)/2)
-    max_combo_x, max_combo_y = 640, 360
-    
-    combinations = {}
-    rng = np.random.default_rng()
-
-    # SCALE FACTOR TO MAKE MAZES SMALLER FOR TIME CONSTRAINTS
-    # THIS IS IMPORTANT
-    theta = 2
-    # THIS IS IMPORTANT
-
-    combo_count = int(input("How many images would you like to generate?"))
-    for _ in range(combo_count):
-        # Uses the min and max values to generate the size
-
-        # TESTING
-        # size_x = rng.integers(low=min_combo_x, high=max_combo_x)
-        # size_y = rng.integers(low=min_combo_y, high=max_combo_y)
-
-        size_x = rng.integers(low=min_combo_x, high=max_combo_x//theta)
-        size_y = rng.integers(low=min_combo_y, high=max_combo_y//theta)
-
-        # This ensures that the maze is always longer horizontally.
-        if size_x < size_y:
-            temp = size_x
-            size_x = size_y
-            size_y = temp
-            cell_count = size_x
-        else:
-            cell_count = size_x
-
-        # The goal of this section is to set the pixel size to automatically scale to hold aspect ratio.  
-        # This formula is the one drawn in tldraw
-        # max_x = ((x-(cell_count+1)*wall_size)/cell_count)
-        max_x = ((x-(cell_count+1)*1)/cell_count)
-        # max_y = ((x-(cell_count*cell_size))/cell_count+1)
-        max_y = ((x-(cell_count*1))/cell_count+1)
-
-        min_x, min_y = 1, 1
-
-        # size_cell = rng.integers(low=min_x, high=max_x)
-        # size_wall = rng.integers(low=min_y, high=max_y)
-
-        # Changed this to evaluate based on min and max conditions
-        # For some reason this is evaluating to the same number sometimes (kinda rare)
-        if min_x != (max_x//theta):
-            size_cell = rng.integers(low=min([min_x, (max_x//theta)]), high=max([min_x, (max_x//theta)]))
-        else:
-            # This is temporary should fix
-            print("Using temp cell size")
-            size_cell = 30
-
-        if min_y != (max_y//theta):
-            size_wall = rng.integers(low=min([min_y, (max_y//theta)]), high=max([min_y, (max_y//theta)]))
-        else:
-            # This is temporary should fix
-            print("Using temp wall size")
-            size_wall = 3
-
-
-
-        combinations.update({_ : [size_x, size_y, size_wall, size_cell]})
-
-
-
-
-    # First need to locate the folder for where the data will go
-
-    count = 0
-    r = len(combinations.keys())
-    for _ in combinations.keys():
-        print(f"Making a maze with the following:\nX Size = {combinations[_][0]}\nY Size = {combinations[_][1]}\nWall Size = {combinations[_][2]}\nCell Size = {combinations[_][3]}")
-        # I'm thinking of reformating this to instead be within the above loop.
-        maze_grid_generation(combinations[_][0], combinations[_][1], combinations[_][2], combinations[_][3])
-        """
-        # print(f"""Generated Maze-Grid '{combinations[_][0]}_x_{combinations[_][1]}_{combinations[_][2]}_{combinations[_][3]}.jpg'""")
 
 
