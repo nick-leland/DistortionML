@@ -13,6 +13,7 @@ if __name__ == "__main__":
     # cell = int(input("What size of a maze do you want to make?"))
     start_time = time.time()
 
+    # TODO add a option that asks if the user wants to save the maze.
     
     walls = 5
     cell = 10
