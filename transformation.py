@@ -3,26 +3,26 @@ from PIL import Image
 from scipy import ndimage
 import matplotlib.pyplot as plt
 
-def apply_vector_field_transform(image, func, radius, center=(0.5, 0.5), strength=1, edge_smoothness=0.1):
-    """
-    Apply a vector field transformation to an image based on a given multivariate function.
-    
-    :param image: Input image as a numpy array (height, width, channels)
-    :param func: A function that takes x and y as inputs and returns a scalar
-    :param radius: Radius of the effect as a fraction of the image size
-    :param center: Tuple (y, x) for the center of the effect, normalized to [0, 1]
-    :param strength: Strength of the effect, scaled to image size
-    :param edge_smoothness: Width of the smooth transition at the edge, as a fraction of the radius
-    :return: Tuple of (transformed image as a numpy array, gradient vectors for vector field)
-    """
+def apply_vector_field_transform(image, func, radius, center=(0.5, 0.5), strength=1, edge_smoothness=0.1, center_smoothness=0.20):
+    # 0.106 strength = .50
+    # 0.106 strength = 1
     rows, cols = image.shape[:2]
     max_dim = max(rows, cols)
     
-    # Convert normalized center to pixel coordinates
-    center_y = int(center[0] * rows)
-    center_x = int(center[1] * cols)
+    #Normalize the positions
+    # Y Needs to be flipped
+    center_y = int(center[1] * rows)
+    center_x = int(center[0] * cols)
+
+    # Inverts the Y axis (Numpy is 0 index at top of image)
+    center_y = abs(rows - center_y)
+
+    print()
+    print(rows, cols)
+    print("y =", center_y, "/", rows)
+    print("x =", center_x, "/", cols)
+    print()
     
-    # Convert normalized radius to pixel radius
     pixel_radius = int(max_dim * radius)
     
     y, x = np.ogrid[:rows, :cols]
@@ -38,8 +38,21 @@ def apply_vector_field_transform(image, func, radius, center=(0.5, 0.5), strengt
     # Calculate gradients
     gy, gx = np.gradient(z)
 
-    # Create smooth transition mask
-    mask = np.clip((radius - dist_from_center) / (radius * edge_smoothness), 0, 1)
+    # Creating a sigmoid function to apply to masks
+    def sigmoid(x, center, steepness):
+        return 1 / (1 + np.exp(-steepness * (x - center)))
+    
+    print(radius)
+    print(strength)
+    print(edge_smoothness)
+    print(center_smoothness)
+
+    # Masking
+    edge_mask = np.clip((radius - dist_from_center) / (radius * edge_smoothness), 0, 1)
+
+    center_mask = np.clip((dist_from_center - radius * center_smoothness) / (radius * center_smoothness), 0, 1)
+
+    mask = edge_mask * center_mask
     
     # Apply mask to gradients
     gx = gx * mask
@@ -75,6 +88,7 @@ def apply_vector_field_transform(image, func, radius, center=(0.5, 0.5), strengt
     transformed_image = np.dstack(channels).astype(image.dtype)
     
     return transformed_image, (gx, gy)
+
 
 def create_gradient_vector_field(gx, gy, image_shape, step=20, reverse=False):
     """
