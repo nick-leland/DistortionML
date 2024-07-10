@@ -7,16 +7,19 @@ from dfs_generation import generate
 from img_gen import init, run
 
 if __name__ == "__main__":
+    # Creates the generator
     rng = np.random.default_rng()
 
+    # Sets our main directory
     os.makedirs("data", exist_ok=True)
     os.chdir("data/")
+
+    # Create output directory and move to the maze output
+    os.makedirs("maze", exist_ok=True)
     os.makedirs("distorted", exist_ok=True)
-    os.makedirs("output", exist_ok=True)
-    files = os.listdir("maze/")
     os.chdir("maze/")
 
-    # Parameters
+    # Base parameters
     size_x = 25
     size_y = 25
     walls = 3
@@ -35,6 +38,8 @@ if __name__ == "__main__":
         # Generate maze from grid
         maze = run(path, neighbors, cell, walls, size_x, size_y, name=_, in_array=a, save=False, return_array=True)
 
+
+        os.chdir("distorted/")
         transformed , (gx, gy) = apply_vector_field_transform(I, bulge, rad, location, strength, smooth)
 
         os.chdir("../distorted/")
