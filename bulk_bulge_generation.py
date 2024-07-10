@@ -66,6 +66,7 @@ if __name__ == "__main__":
     # Sets the numpy generator
     rng = np.random.default_rng()
 
+    os.makedirs("data", exist_ok=True)
     os.chdir("data/")
     os.makedirs("grid", exist_ok=True)
     os.makedirs("output", exist_ok=True)
@@ -78,7 +79,7 @@ if __name__ == "__main__":
         transformed, (gx, gy) = apply_vector_field_transform(I, bulge, rad, location, strth, smth)
 
         os.chdir("../output/")
-        result = amage.fromarray(transformed)
+        result = Image.fromarray(transformed)
         result.save(f"{_.title()}.jpg")
         os.chdir("../grid/")
 
