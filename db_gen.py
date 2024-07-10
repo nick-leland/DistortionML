@@ -11,19 +11,20 @@ from PIL import Image
 
 # Target image size should be around this? 
 
-def maze_grid_generation(size_x, size_y, walls, cell, max_y, counter, gridonly=False):
+def maze_grid_generation(size_x, size_y, walls, cell, max_y, counter, gridonly=False, mazeonly=False):
     """Creates mazes and grids that both match a range of pixel prospects"""
     # Creates a folder for the type of data it's generating 
     # In this case Mazes and Grids which will use the same pixel information
     path, neighbors = generate(size_x, size_y)
     a = init(size_x, size_y, walls, cell, max_y)
 
-    
     # Save pictures to the database
     grid = Image.fromarray(a)
     grid = grid.convert('RGB')
-    os.makedirs("grid", exist_ok=True)
-    grid.save(f"grid/{size_x}_x_{size_y}_{walls}_{cell}g.jpg")
+    if mazeonly == False: 
+        os.makedirs("grid", exist_ok=True)
+        grid.save(f"grid/{size_x}_x_{size_y}_{walls}_{cell}g.jpg")
+        return a
     # grid.show()
 
     if gridonly == False:
@@ -34,6 +35,8 @@ def maze_grid_generation(size_x, size_y, walls, cell, max_y, counter, gridonly=F
         os.makedirs("maze", exist_ok=True)
         maze.save(f"maze/{size_x}_x_{size_y}_{walls}_{cell}_{counter}m.jpg")
         # maze.show()
+        return a
+        
 
 
 # Image generation should be configured, now just need to setup the maze generation

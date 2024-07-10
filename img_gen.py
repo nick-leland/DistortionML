@@ -2,7 +2,7 @@ from PIL import Image
 import numpy as np
 
 
-def init(size_x, size_y, walls, cell, max_y=0, wall_color=[255, 255, 255], cell_color=[0, 0, 0]):
+def init(size_x, size_y, walls, cell, wall_color=[255, 255, 255], cell_color=[0, 0, 0]):
     """Sets the initial numpy array"""
     # TODO There is a probably a better way to scale these, look into it.
     pixels_y = (size_x * cell) + (walls * (size_x+1))
@@ -93,7 +93,7 @@ def move(a, pos1, pos2, cellsize, wallsize, neighbors_dict):
         horizon_wall(a, pos1, pos2, cellsize, wallsize)
 
 
-def run(test_path, test_neighbors, cell, walls, size_x, size_y, max_y, name=None, in_array='No', save=False):
+def run(test_path, test_neighbors, cell, walls, size_x, size_y, name=None, in_array='No', save=False, return_array=False):
     if name == None:
         name = str(size_x) + 'x' +  str(size_y)
     if isinstance(in_array, np.ndarray) != True:
@@ -188,6 +188,8 @@ def run(test_path, test_neighbors, cell, walls, size_x, size_y, max_y, name=None
         im = Image.fromarray(a)
         im = im.convert('RGB')
         im.show()
+    if return_array == True:
+        return a
 
 
 if __name__ == "__main__":
