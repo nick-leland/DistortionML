@@ -17,11 +17,11 @@ def apply_vector_field_transform(image, func, radius, center=(0.5, 0.5), strengt
     # Inverts the Y axis (Numpy is 0 index at top of image)
     center_y = abs(rows - center_y)
 
-    print()
-    print(rows, cols)
-    print("y =", center_y, "/", rows)
-    print("x =", center_x, "/", cols)
-    print()
+    # print()
+    # print(rows, cols)
+    # print("y =", center_y, "/", rows)
+    # print("x =", center_x, "/", cols)
+    # print()
     
     pixel_radius = int(max_dim * radius)
     
@@ -42,10 +42,10 @@ def apply_vector_field_transform(image, func, radius, center=(0.5, 0.5), strengt
     def sigmoid(x, center, steepness):
         return 1 / (1 + np.exp(-steepness * (x - center)))
     
-    print(radius)
-    print(strength)
-    print(edge_smoothness)
-    print(center_smoothness)
+    # print(radius)
+    # print(strength)
+    # print(edge_smoothness)
+    # print(center_smoothness)
 
     # Masking
     edge_mask = np.clip((radius - dist_from_center) / (radius * edge_smoothness), 0, 1)

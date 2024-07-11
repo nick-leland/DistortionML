@@ -43,6 +43,7 @@ if __name__ == "__main__":
     # a = init(size_x, size_y, walls, cell, max_y)
 
     for _ in range(x):
+        print(f"{_}/{x}")
         # Generates grids for the initial maze creation
         a = init(size_x, size_y, walls, cell)
         b = init(size_x, size_y, walls, cell)
