@@ -30,15 +30,13 @@ if __name__ == "__main__":
     os.makedirs("labels", exist_ok=True)
     os.chdir("labels/")
 
-    os.makedirs("maze", exist_ok=True)
-    os.makedirs("fresh_maze", exist_ok=True)
     os.makedirs("distorted", exist_ok=True)
    
 
+    os.chdir("../")
     os.makedirs("images", exist_ok=True)
     os.chdir("images/")
 
-    # Create output directory and move to the maze output
     os.makedirs("maze", exist_ok=True)
     os.makedirs("fresh_maze", exist_ok=True)
     os.makedirs("distorted", exist_ok=True)
@@ -91,10 +89,8 @@ if __name__ == "__main__":
         radius, location, strength, edge_smoothness= definitions(rng)
         center_x = location[0]
         center_y = location[1]
-        print()
         print("Location (x, y)")
         print(f"({center_x}, {center_y})")
-        print()
 
         # Using a 0 smooth in order to add harsh values
         edge_smoothness = 0
@@ -106,12 +102,16 @@ if __name__ == "__main__":
         transformed_output = transformed_out.convert('RGB')
         transformed_out.save(f"{_}_distorted.jpg")
 
-
         
-        size = radius * 2
-        print(yolo_output(label, center_x, (1-center_y), size, size, ids))
 
+        size = radius * 2
+        yolo = yolo_output(label, center_x, (1-center_y), size, size, ids)
+        os.chdir("../../labels/distorted")
+
+        f = open(f"{_}_distorted.txt", "wt")
+        f.write(yolo)
+        f.close()
 
         result = Image.fromarray(transformed)
-        os.chdir("../fresh_maze/")
+        os.chdir("../../images/fresh_maze/")
 
