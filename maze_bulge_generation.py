@@ -7,6 +7,16 @@ from dfs_generation import generate
 from bulk_bulge_generation import definitions
 from img_gen import init, run
 
+
+def yolo_output(obj_id, x, y, w, h, all_ids):
+    if len(str(obj_id)) > len(str(max(all_ids))):
+         spaces = " " * len(str(max(all_ids))) - len(str(obj_id))
+    else:
+         spaces = ''
+    
+    return f"{obj_id}{spaces} {x} {y} {w} {h}"
+
+
 if __name__ == "__main__":
     # Creates the generator
     rng = np.random.default_rng()
@@ -16,6 +26,17 @@ if __name__ == "__main__":
     # Sets our main directory
     os.makedirs("data", exist_ok=True)
     os.chdir("data/")
+
+    os.makedirs("labels", exist_ok=True)
+    os.chdir("labels/")
+
+    os.makedirs("maze", exist_ok=True)
+    os.makedirs("fresh_maze", exist_ok=True)
+    os.makedirs("distorted", exist_ok=True)
+   
+
+    os.makedirs("images", exist_ok=True)
+    os.chdir("images/")
 
     # Create output directory and move to the maze output
     os.makedirs("maze", exist_ok=True)
@@ -42,6 +63,13 @@ if __name__ == "__main__":
     # Removed the max_y from init
     # a = init(size_x, size_y, walls, cell, max_y)
 
+
+    # Sets the information that the yolo_output will use
+    label = 0
+    YOLO_dict = {0 : 'Bulge'}
+    ids = list(YOLO_dict.keys())
+
+
     for _ in range(x):
         print(f"{_}/{x}")
         # Generates grids for the initial maze creation
@@ -63,6 +91,10 @@ if __name__ == "__main__":
         radius, location, strength, edge_smoothness= definitions(rng)
         center_x = location[0]
         center_y = location[1]
+        print()
+        print("Location (x, y)")
+        print(f"({center_x}, {center_y})")
+        print()
 
         # Using a 0 smooth in order to add harsh values
         edge_smoothness = 0
@@ -73,6 +105,11 @@ if __name__ == "__main__":
         transformed_out = Image.fromarray(transformed)
         transformed_output = transformed_out.convert('RGB')
         transformed_out.save(f"{_}_distorted.jpg")
+
+
+        
+        size = radius * 2
+        print(yolo_output(label, center_x, (1-center_y), size, size, ids))
 
 
         result = Image.fromarray(transformed)
