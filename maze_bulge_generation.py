@@ -21,28 +21,34 @@ if __name__ == "__main__":
     # Creates the generator
     rng = np.random.default_rng()
 
+    # Sets the split of data
+    train, val, test = 0.8, 0.1, 0.1
+    # Whether or not they are filled
+    train_status, val_status, test_status = False, False, False
+
     # We want to create one dataset where we use mazes and bulge the same mazes, and one where we use different mazes.
 
     # Sets our main directory
     os.makedirs("data", exist_ok=True)
     os.chdir("data/")
-
-    os.makedirs("labels", exist_ok=True)
-    os.chdir("labels/")
-
-    os.makedirs("distorted", exist_ok=True)
-   
-
-    os.chdir("../")
+    
+    os.makedirs("test", exist_ok=True)
+    os.chdir("test/")
     os.makedirs("images", exist_ok=True)
-    os.chdir("images/")
+    os.makedirs("labels", exist_ok=True)
+    os.chdir("../")
 
-    os.makedirs("maze", exist_ok=True)
-    os.makedirs("fresh_maze", exist_ok=True)
-    os.makedirs("distorted", exist_ok=True)
+    os.makedirs("train", exist_ok=True)
+    os.chdir("train")
+    os.makedirs("images", exist_ok=True)
+    os.makedirs("labels", exist_ok=True)
+    os.chdir("../")
 
-    # We first save a fresh maze so prep that location 
-    os.chdir("fresh_maze/")
+    os.makedirs("valid", exist_ok=True)
+    os.chdir("valid")
+    os.makedirs("images", exist_ok=True)
+    os.makedirs("labels", exist_ok=True)
+    os.chdir("../")
 
     # Base parameters
     size_x = 25
@@ -50,6 +56,10 @@ if __name__ == "__main__":
     walls = 3
     cell = 15
     x = int(input("How many pictures would you like to generate?"))
+
+    train_run = round(train * x)
+    val_run = round(val * x)
+    test_run = round(test * x)
 
 
     # Defines the bulge function we will be using
@@ -67,24 +77,38 @@ if __name__ == "__main__":
     YOLO_dict = {0 : 'Bulge'}
     ids = list(YOLO_dict.keys())
 
+    counter_train, counter_test, counter_val = 0, 0, 0
 
-    for _ in range(x):
+    for _ in range(sum([train_run, val_run, test_run])):
+        # Sets the initial file selection
+        if counter_train != train_run:
+            os.chdir("train/images")
+        if counter_test != test_run:
+            os.chdir("test/images")
+        if counter_val != val_run:
+            os.chdir("valid/images")
+
+
+
+
         print(f"{_}/{x}")
         # Generates grids for the initial maze creation
-        a = init(size_x, size_y, walls, cell)
-        b = init(size_x, size_y, walls, cell)
+        # b = init(size_x, size_y, walls, cell)
 
-        path, neighbors = generate(size_x, size_y)
-        path_fresh, neighbors_fresh = generate(size_x, size_y)
+        # path_fresh, neighbors_fresh = generate(size_x, size_y)
 
-        # Creates and saves a fresh maze
-        fresh_maze = run(path_fresh, neighbors_fresh, cell, walls, size_x, size_y, name=f"{_}_fresh", in_array=b, save=True, return_array=True)
+        # # Creates and saves a fresh maze
+        # fresh_maze = run(path_fresh, neighbors_fresh, cell, walls, size_x, size_y, name=f"{_}_fresh", in_array=b, save=True, return_array=True)
+        # Currently disabled, only generating initial maze
 
-        os.chdir("../maze/")
+        # os.chdir("../maze/")
+
         # Generate maze from grid
+        path, neighbors = generate(size_x, size_y)
+        a = init(size_x, size_y, walls, cell)
         maze = run(path, neighbors, cell, walls, size_x, size_y, name=f"{_}_maze", in_array=a, save=True, return_array=True)
 
-        os.chdir("../distorted/")
+        # os.chdir("../distorted/")
 
         radius, location, strength, edge_smoothness= definitions(rng)
         center_x = location[0]
@@ -106,12 +130,21 @@ if __name__ == "__main__":
 
         size = radius * 2
         yolo = yolo_output(label, center_x, (1-center_y), size, size, ids)
-        os.chdir("../../labels/distorted")
+        # os.chdir("../../labels/distorted")
+        os.chdir("../labels")
 
         f = open(f"{_}_distorted.txt", "wt")
         f.write(yolo)
         f.close()
 
         result = Image.fromarray(transformed)
-        os.chdir("../../images/fresh_maze/")
+        os.chdir("../../")
+
+        if counter_train != train_run:
+            counter_train += 1
+        if counter_test != test_run:
+            counter_test += 1
+        if counter_val != val_run:
+            counter_val += 1
+
 
