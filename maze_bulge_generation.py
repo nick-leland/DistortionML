@@ -78,14 +78,25 @@ if __name__ == "__main__":
     ids = list(YOLO_dict.keys())
 
     counter_train, counter_test, counter_val = 0, 0, 0
+    print(train_run)
+    print(test_run)
+    print(val_run)
 
     for _ in range(sum([train_run, val_run, test_run])):
         # Sets the initial file selection
+        print()
+        print(counter_train, counter_test, counter_val)
+        print()
         if counter_train != train_run:
+            counter_train += 1
             os.chdir("train/images")
-        if counter_test != test_run:
+        elif counter_test != test_run:
+            counter_test += 1
+            print("Time for test images")
             os.chdir("test/images")
-        if counter_val != val_run:
+        elif counter_val != val_run:
+            counter_val += 1
+            print("Time for validation images")
             os.chdir("valid/images")
 
 
@@ -140,11 +151,11 @@ if __name__ == "__main__":
         result = Image.fromarray(transformed)
         os.chdir("../../")
 
-        if counter_train != train_run:
-            counter_train += 1
-        if counter_test != test_run:
-            counter_test += 1
-        if counter_val != val_run:
-            counter_val += 1
+        # if counter_train != train_run:
+        #     counter_train += 1
+        # if counter_test != test_run:
+        #     counter_test += 1
+        # if counter_val != val_run:
+        #     counter_val += 1
 
 
