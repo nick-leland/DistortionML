@@ -1,1 +1,918 @@
-{"metadata":{"kernelspec":{"language":"python","display_name":"Python 3","name":"python3"},"language_info":{"name":"python","version":"3.10.13","mimetype":"text/x-python","codemirror_mode":{"name":"ipython","version":3},"pygments_lexer":"ipython3","nbconvert_exporter":"python","file_extension":".py"},"kaggle":{"accelerator":"nvidiaTeslaT4","dataSources":[{"sourceType":"datasetVersion","sourceId":8987164,"datasetId":5407454,"databundleVersionId":9152453}],"dockerImageVersionId":30746,"isInternetEnabled":true,"language":"python","sourceType":"notebook","isGpuEnabled":true}},"nbformat_minor":4,"nbformat":4,"cells":[{"cell_type":"markdown","source":"First, let's install ultralytics, which contains YOLOv8!","metadata":{}},{"cell_type":"code","source":"%pip install ultralytics","metadata":{"_uuid":"8f2839f25d086af736a60e9eeb907d3b93b6e0e5","_cell_guid":"b1076dfc-b9ad-4769-8c92-a6c4dae69d19","_kg_hide-output":true,"execution":{"iopub.status.busy":"2024-07-19T01:50:15.134364Z","iopub.execute_input":"2024-07-19T01:50:15.134973Z","iopub.status.idle":"2024-07-19T01:50:28.225029Z","shell.execute_reply.started":"2024-07-19T01:50:15.134933Z","shell.execute_reply":"2024-07-19T01:50:28.223763Z"},"trusted":true},"execution_count":1,"outputs":[{"name":"stdout","text":"Requirement already satisfied: ultralytics in /opt/conda/lib/python3.10/site-packages (8.2.60)\nRequirement already satisfied: numpy<2.0.0,>=1.23.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (1.26.4)\nRequirement already satisfied: matplotlib>=3.3.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (3.7.5)\nRequirement already satisfied: opencv-python>=4.6.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (4.10.0.84)\nRequirement already satisfied: pillow>=7.1.2 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (9.5.0)\nRequirement already satisfied: pyyaml>=5.3.1 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (6.0.1)\nRequirement already satisfied: requests>=2.23.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (2.32.3)\nRequirement already satisfied: scipy>=1.4.1 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (1.11.4)\nRequirement already satisfied: torch>=1.8.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (2.1.2)\nRequirement already satisfied: torchvision>=0.9.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (0.16.2)\nRequirement already satisfied: tqdm>=4.64.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (4.66.4)\nRequirement already satisfied: psutil in /opt/conda/lib/python3.10/site-packages (from ultralytics) (5.9.3)\nRequirement already satisfied: py-cpuinfo in /opt/conda/lib/python3.10/site-packages (from ultralytics) (9.0.0)\nRequirement already satisfied: pandas>=1.1.4 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (2.2.2)\nRequirement already satisfied: seaborn>=0.11.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (0.12.2)\nRequirement already satisfied: ultralytics-thop>=2.0.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (2.0.0)\nRequirement already satisfied: contourpy>=1.0.1 in /opt/conda/lib/python3.10/site-packages (from matplotlib>=3.3.0->ultralytics) (1.2.0)\nRequirement already satisfied: cycler>=0.10 in /opt/conda/lib/python3.10/site-packages (from matplotlib>=3.3.0->ultralytics) (0.12.1)\nRequirement already satisfied: fonttools>=4.22.0 in /opt/conda/lib/python3.10/site-packages (from matplotlib>=3.3.0->ultralytics) (4.47.0)\nRequirement already satisfied: kiwisolver>=1.0.1 in /opt/conda/lib/python3.10/site-packages (from matplotlib>=3.3.0->ultralytics) (1.4.5)\nRequirement already satisfied: packaging>=20.0 in /opt/conda/lib/python3.10/site-packages (from matplotlib>=3.3.0->ultralytics) (21.3)\nRequirement already satisfied: pyparsing>=2.3.1 in /opt/conda/lib/python3.10/site-packages (from matplotlib>=3.3.0->ultralytics) (3.1.1)\nRequirement already satisfied: python-dateutil>=2.7 in /opt/conda/lib/python3.10/site-packages (from matplotlib>=3.3.0->ultralytics) (2.9.0.post0)\nRequirement already satisfied: pytz>=2020.1 in /opt/conda/lib/python3.10/site-packages (from pandas>=1.1.4->ultralytics) (2023.3.post1)\nRequirement already satisfied: tzdata>=2022.7 in /opt/conda/lib/python3.10/site-packages (from pandas>=1.1.4->ultralytics) (2023.4)\nRequirement already satisfied: charset-normalizer<4,>=2 in /opt/conda/lib/python3.10/site-packages (from requests>=2.23.0->ultralytics) (3.3.2)\nRequirement already satisfied: idna<4,>=2.5 in /opt/conda/lib/python3.10/site-packages (from requests>=2.23.0->ultralytics) (3.6)\nRequirement already satisfied: urllib3<3,>=1.21.1 in /opt/conda/lib/python3.10/site-packages (from requests>=2.23.0->ultralytics) (1.26.18)\nRequirement already satisfied: certifi>=2017.4.17 in /opt/conda/lib/python3.10/site-packages (from requests>=2.23.0->ultralytics) (2024.7.4)\nRequirement already satisfied: filelock in /opt/conda/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics) (3.13.1)\nRequirement already satisfied: typing-extensions in /opt/conda/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics) (4.9.0)\nRequirement already satisfied: sympy in /opt/conda/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics) (1.13.0)\nRequirement already satisfied: networkx in /opt/conda/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics) (3.2.1)\nRequirement already satisfied: jinja2 in /opt/conda/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics) (3.1.2)\nRequirement already satisfied: fsspec in /opt/conda/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics) (2024.5.0)\nRequirement already satisfied: six>=1.5 in /opt/conda/lib/python3.10/site-packages (from python-dateutil>=2.7->matplotlib>=3.3.0->ultralytics) (1.16.0)\nRequirement already satisfied: MarkupSafe>=2.0 in /opt/conda/lib/python3.10/site-packages (from jinja2->torch>=1.8.0->ultralytics) (2.1.3)\nRequirement already satisfied: mpmath<1.4,>=1.1.0 in /opt/conda/lib/python3.10/site-packages (from sympy->torch>=1.8.0->ultralytics) (1.3.0)\nNote: you may need to restart the kernel to use updated packages.\n","output_type":"stream"}]},{"cell_type":"markdown","source":"Now we can install the necessary components we will be using.","metadata":{}},{"cell_type":"code","source":"import os\nimport cv2\nimport numpy as np\nimport pandas as pd\nimport shutil\nfrom shutil import copyfile\nimport matplotlib.pyplot as plt\n# from matplotlib import animation, rc\n# rc('animation', html='jshtml')\nfrom PIL import Image\n\nimport ultralytics\nfrom ultralytics import YOLO\nultralytics.checks()","metadata":{"execution":{"iopub.status.busy":"2024-07-19T01:50:28.227767Z","iopub.execute_input":"2024-07-19T01:50:28.228701Z","iopub.status.idle":"2024-07-19T01:50:30.791756Z","shell.execute_reply.started":"2024-07-19T01:50:28.228660Z","shell.execute_reply":"2024-07-19T01:50:30.790735Z"},"trusted":true},"execution_count":2,"outputs":[{"name":"stdout","text":"Ultralytics YOLOv8.2.60 🚀 Python-3.10.13 torch-2.1.2 CUDA:0 (Tesla T4, 15095MiB)\nSetup complete ✅ (4 CPUs, 31.4 GB RAM, 5771.7/8062.4 GB disk)\n","output_type":"stream"}]},{"cell_type":"code","source":"path = os.path.relpath(\"/kaggle/input/maze-classification-localization/data\")\nfiles = os.listdir(path)\nfiles","metadata":{"execution":{"iopub.status.busy":"2024-07-19T01:50:30.793229Z","iopub.execute_input":"2024-07-19T01:50:30.793870Z","iopub.status.idle":"2024-07-19T01:50:30.806038Z","shell.execute_reply.started":"2024-07-19T01:50:30.793831Z","shell.execute_reply":"2024-07-19T01:50:30.804823Z"},"trusted":true},"execution_count":3,"outputs":[{"execution_count":3,"output_type":"execute_result","data":{"text/plain":"['valid', 'test', 'train']"},"metadata":{}}]},{"cell_type":"markdown","source":"# Create yaml file\nYAML is a data serialization language that is designed to be 'human readable'","metadata":{}},{"cell_type":"code","source":"import yaml\n\ndata_yaml = dict(\n    train='train',\n    val='valid',\n    test='test',\n    nc=1,\n    names=['distortion']\n)\n\nwith open('data.yaml', 'w') as outfile:\n    yaml.dump(data_yaml, outfile, default_flow_style=True)\n    \n%cat data.yaml","metadata":{"execution":{"iopub.status.busy":"2024-07-19T01:50:30.808373Z","iopub.execute_input":"2024-07-19T01:50:30.808667Z","iopub.status.idle":"2024-07-19T01:50:31.852160Z","shell.execute_reply.started":"2024-07-19T01:50:30.808641Z","shell.execute_reply":"2024-07-19T01:50:31.850936Z"},"trusted":true},"execution_count":4,"outputs":[{"name":"stdout","text":"{names: [distortion], nc: 1, test: test, train: train, val: valid}\n","output_type":"stream"}]},{"cell_type":"code","source":"shutil.copytree(\"/kaggle/input/maze-classification-localization/data\", \"/kaggle/working/datasets\", dirs_exist_ok=True)\nos.chdir(\"/kaggle/working\")","metadata":{"execution":{"iopub.status.busy":"2024-07-19T01:50:31.853643Z","iopub.execute_input":"2024-07-19T01:50:31.853982Z","iopub.status.idle":"2024-07-19T01:50:40.872442Z","shell.execute_reply.started":"2024-07-19T01:50:31.853953Z","shell.execute_reply":"2024-07-19T01:50:40.871380Z"},"trusted":true},"execution_count":5,"outputs":[]},{"cell_type":"markdown","source":"# Train\nNow we can begin looking into training the model.  First let's load the model.","metadata":{}},{"cell_type":"code","source":"model = YOLO(\"yolov8x.pt\")","metadata":{"execution":{"iopub.status.busy":"2024-07-19T01:50:40.873942Z","iopub.execute_input":"2024-07-19T01:50:40.874334Z","iopub.status.idle":"2024-07-19T01:50:41.272697Z","shell.execute_reply.started":"2024-07-19T01:50:40.874298Z","shell.execute_reply":"2024-07-19T01:50:41.271614Z"},"trusted":true},"execution_count":6,"outputs":[]},{"cell_type":"code","source":"!yolo task=detect mode=train model=yolov8x.pt data=data.yaml epochs=4 imgsz=480","metadata":{"execution":{"iopub.status.busy":"2024-07-19T01:50:41.273980Z","iopub.execute_input":"2024-07-19T01:50:41.274298Z","iopub.status.idle":"2024-07-19T02:07:13.663279Z","shell.execute_reply.started":"2024-07-19T01:50:41.274270Z","shell.execute_reply":"2024-07-19T02:07:13.662211Z"},"trusted":true},"execution_count":7,"outputs":[{"name":"stdout","text":"Ultralytics YOLOv8.2.60 🚀 Python-3.10.13 torch-2.1.2 CUDA:0 (Tesla T4, 15095MiB)\n\u001b[34m\u001b[1mengine/trainer: \u001b[0mtask=detect, mode=train, model=yolov8x.pt, data=data.yaml, epochs=4, time=None, patience=100, batch=16, imgsz=480, save=True, save_period=-1, cache=False, device=None, workers=8, project=None, name=train2, exist_ok=False, pretrained=True, optimizer=auto, verbose=True, seed=0, deterministic=True, single_cls=False, rect=False, cos_lr=False, close_mosaic=10, resume=False, amp=True, fraction=1.0, profile=False, freeze=None, multi_scale=False, overlap_mask=True, mask_ratio=4, dropout=0.0, val=True, split=val, save_json=False, save_hybrid=False, conf=None, iou=0.7, max_det=300, half=False, dnn=False, plots=True, source=None, vid_stride=1, stream_buffer=False, visualize=False, augment=False, agnostic_nms=False, classes=None, retina_masks=False, embed=None, show=False, save_frames=False, save_txt=False, save_conf=False, save_crop=False, show_labels=True, show_conf=True, show_boxes=True, line_width=None, format=torchscript, keras=False, optimize=False, int8=False, dynamic=False, simplify=False, opset=None, workspace=4, nms=False, lr0=0.01, lrf=0.01, momentum=0.937, weight_decay=0.0005, warmup_epochs=3.0, warmup_momentum=0.8, warmup_bias_lr=0.1, box=7.5, cls=0.5, dfl=1.5, pose=12.0, kobj=1.0, label_smoothing=0.0, nbs=64, hsv_h=0.015, hsv_s=0.7, hsv_v=0.4, degrees=0.0, translate=0.1, scale=0.5, shear=0.0, perspective=0.0, flipud=0.0, fliplr=0.5, bgr=0.0, mosaic=1.0, mixup=0.0, copy_paste=0.0, auto_augment=randaugment, erasing=0.4, crop_fraction=1.0, cfg=None, tracker=botsort.yaml, save_dir=runs/detect/train2\nOverriding model.yaml nc=80 with nc=1\n\n                   from  n    params  module                                       arguments                     \n  0                  -1  1      2320  ultralytics.nn.modules.conv.Conv             [3, 80, 3, 2]                 \n  1                  -1  1    115520  ultralytics.nn.modules.conv.Conv             [80, 160, 3, 2]               \n  2                  -1  3    436800  ultralytics.nn.modules.block.C2f             [160, 160, 3, True]           \n  3                  -1  1    461440  ultralytics.nn.modules.conv.Conv             [160, 320, 3, 2]              \n  4                  -1  6   3281920  ultralytics.nn.modules.block.C2f             [320, 320, 6, True]           \n  5                  -1  1   1844480  ultralytics.nn.modules.conv.Conv             [320, 640, 3, 2]              \n  6                  -1  6  13117440  ultralytics.nn.modules.block.C2f             [640, 640, 6, True]           \n  7                  -1  1   3687680  ultralytics.nn.modules.conv.Conv             [640, 640, 3, 2]              \n  8                  -1  3   6969600  ultralytics.nn.modules.block.C2f             [640, 640, 3, True]           \n  9                  -1  1   1025920  ultralytics.nn.modules.block.SPPF            [640, 640, 5]                 \n 10                  -1  1         0  torch.nn.modules.upsampling.Upsample         [None, 2, 'nearest']          \n 11             [-1, 6]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           \n 12                  -1  3   7379200  ultralytics.nn.modules.block.C2f             [1280, 640, 3]                \n 13                  -1  1         0  torch.nn.modules.upsampling.Upsample         [None, 2, 'nearest']          \n 14             [-1, 4]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           \n 15                  -1  3   1948800  ultralytics.nn.modules.block.C2f             [960, 320, 3]                 \n 16                  -1  1    922240  ultralytics.nn.modules.conv.Conv             [320, 320, 3, 2]              \n 17            [-1, 12]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           \n 18                  -1  3   7174400  ultralytics.nn.modules.block.C2f             [960, 640, 3]                 \n 19                  -1  1   3687680  ultralytics.nn.modules.conv.Conv             [640, 640, 3, 2]              \n 20             [-1, 9]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           \n 21                  -1  3   7379200  ultralytics.nn.modules.block.C2f             [1280, 640, 3]                \n 22        [15, 18, 21]  1   8718931  ultralytics.nn.modules.head.Detect           [1, [320, 640, 640]]          \nModel summary: 365 layers, 68,153,571 parameters, 68,153,555 gradients, 258.1 GFLOPs\n\nTransferred 589/595 items from pretrained weights\n\u001b[34m\u001b[1mTensorBoard: \u001b[0mStart with 'tensorboard --logdir runs/detect/train2', view at http://localhost:6006/\nFreezing layer 'model.22.dfl.conv.weight'\n\u001b[34m\u001b[1mAMP: \u001b[0mrunning Automatic Mixed Precision (AMP) checks with YOLOv8n...\n\u001b[34m\u001b[1mAMP: \u001b[0mchecks passed ✅\n\u001b[34m\u001b[1mtrain: \u001b[0mScanning /kaggle/working/datasets/train/labels.cache... 2400 images, 2400\u001b[0m\n\u001b[34m\u001b[1mtrain: \u001b[0mWARNING ⚠️ /kaggle/working/datasets/train/images/1098_distorted.jpg: ignoring corrupt image/label: negative label values [   -0.11336    -0.11336]\n\u001b[34m\u001b[1mtrain: \u001b[0mWARNING ⚠️ /kaggle/working/datasets/train/images/2111_distorted.jpg: ignoring corrupt image/label: negative label values [  -0.011259   -0.011259]\n\u001b[34m\u001b[1mtrain: \u001b[0mWARNING ⚠️ /kaggle/working/datasets/train/images/2354_distorted.jpg: ignoring corrupt image/label: negative label values [  -0.022605   -0.022605]\n\u001b[34m\u001b[1malbumentations: \u001b[0mBlur(p=0.01, blur_limit=(3, 7)), MedianBlur(p=0.01, blur_limit=(3, 7)), ToGray(p=0.01), CLAHE(p=0.01, clip_limit=(1, 4.0), tile_grid_size=(8, 8))\n/opt/conda/lib/python3.10/multiprocessing/popen_fork.py:66: RuntimeWarning: os.fork() was called. os.fork() is incompatible with multithreaded code, and JAX is multithreaded, so this will likely lead to a deadlock.\n  self.pid = os.fork()\n\u001b[34m\u001b[1mval: \u001b[0mScanning /kaggle/working/datasets/valid/labels.cache... 300 images, 300 bac\u001b[0m\nPlotting labels to runs/detect/train2/labels.jpg... \n\u001b[34m\u001b[1moptimizer:\u001b[0m 'optimizer=auto' found, ignoring 'lr0=0.01' and 'momentum=0.937' and determining best 'optimizer', 'lr0' and 'momentum' automatically... \n\u001b[34m\u001b[1moptimizer:\u001b[0m AdamW(lr=0.002, momentum=0.9) with parameter groups 97 weight(decay=0.0), 104 weight(decay=0.0005), 103 bias(decay=0.0)\n\u001b[34m\u001b[1mTensorBoard: \u001b[0mmodel graph visualization added ✅\nImage sizes 480 train, 480 val\nUsing 2 dataloader workers\nLogging results to \u001b[1mruns/detect/train2\u001b[0m\nStarting training for 4 epochs...\n\n      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size\n        1/4      8.63G     0.6335     0.8126      1.173         16        480: 1\n                 Class     Images  Instances      Box(P          R      mAP50  m\n                   all        600        300      0.458      0.535      0.495       0.35\n\n      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size\n        2/4      8.35G     0.5147       0.46      1.075         12        480: 1\n                 Class     Images  Instances      Box(P          R      mAP50  m\n                   all        600        300          1      0.964      0.982      0.929\n\n      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size\n        3/4      8.32G     0.4118       0.36      1.007         14        480: 1\n                 Class     Images  Instances      Box(P          R      mAP50  m\n                   all        600        300          1      0.992      0.995      0.963\n\n      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size\n        4/4      8.56G     0.3101     0.2846     0.9546          5        480: 1\n                 Class     Images  Instances      Box(P          R      mAP50  m\n                   all        600        300          1          1      0.995      0.992\n\n4 epochs completed in 0.264 hours.\nOptimizer stripped from runs/detect/train2/weights/last.pt, 136.7MB\nOptimizer stripped from runs/detect/train2/weights/best.pt, 136.7MB\n\nValidating runs/detect/train2/weights/best.pt...\nUltralytics YOLOv8.2.60 🚀 Python-3.10.13 torch-2.1.2 CUDA:0 (Tesla T4, 15095MiB)\nModel summary (fused): 268 layers, 68,124,531 parameters, 0 gradients, 257.4 GFLOPs\n                 Class     Images  Instances      Box(P          R      mAP50  m\n                   all        600        300          1          1      0.995      0.992\nSpeed: 0.1ms preprocess, 15.1ms inference, 0.0ms loss, 1.3ms postprocess per image\nResults saved to \u001b[1mruns/detect/train2\u001b[0m\n💡 Learn more at https://docs.ultralytics.com/modes/train\n","output_type":"stream"}]},{"cell_type":"markdown","source":"# Saving the Model\n\nNow we are going to save the model! We can use the built in `.save` function within ultralytics.  We will save it with the .pt extension which is a PyTorch extension.  ","metadata":{}},{"cell_type":"code","source":"model.save('bulge_yolo_model.pt')","metadata":{"execution":{"iopub.status.busy":"2024-07-19T03:33:35.025719Z","iopub.execute_input":"2024-07-19T03:33:35.026688Z","iopub.status.idle":"2024-07-19T03:33:35.791391Z","shell.execute_reply.started":"2024-07-19T03:33:35.026651Z","shell.execute_reply":"2024-07-19T03:33:35.790496Z"},"trusted":true},"execution_count":16,"outputs":[]}]}
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "9fa93b97",
+   "metadata": {
+    "papermill": {
+     "duration": 0.005054,
+     "end_time": "2024-07-26T01:39:31.553634",
+     "exception": false,
+     "start_time": "2024-07-26T01:39:31.548580",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "# Importing Required Libraries \n",
+    "\n",
+    "First, let's install ultralytics, which contains YOLOv8!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "5b2c0822",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-26T01:39:31.564801Z",
+     "iopub.status.busy": "2024-07-26T01:39:31.564079Z",
+     "iopub.status.idle": "2024-07-26T01:39:32.565235Z",
+     "shell.execute_reply": "2024-07-26T01:39:32.564191Z"
+    },
+    "papermill": {
+     "duration": 1.009261,
+     "end_time": "2024-07-26T01:39:32.567628",
+     "exception": false,
+     "start_time": "2024-07-26T01:39:31.558367",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "# Clears the output\n",
+    "!rm -rf /kaggle/working/*"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "9c4a3251",
+   "metadata": {
+    "_cell_guid": "b1076dfc-b9ad-4769-8c92-a6c4dae69d19",
+    "_kg_hide-output": true,
+    "_uuid": "8f2839f25d086af736a60e9eeb907d3b93b6e0e5",
+    "execution": {
+     "iopub.execute_input": "2024-07-26T01:39:32.578439Z",
+     "iopub.status.busy": "2024-07-26T01:39:32.578131Z",
+     "iopub.status.idle": "2024-07-26T01:39:47.304487Z",
+     "shell.execute_reply": "2024-07-26T01:39:47.303281Z"
+    },
+    "papermill": {
+     "duration": 14.734346,
+     "end_time": "2024-07-26T01:39:47.306647",
+     "exception": false,
+     "start_time": "2024-07-26T01:39:32.572301",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Collecting ultralytics\r\n",
+      "  Downloading ultralytics-8.2.66-py3-none-any.whl.metadata (41 kB)\r\n",
+      "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m41.3/41.3 kB\u001b[0m \u001b[31m2.0 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\r\n",
+      "\u001b[?25hRequirement already satisfied: numpy<2.0.0,>=1.23.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (1.26.4)\r\n",
+      "Requirement already satisfied: matplotlib>=3.3.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (3.7.5)\r\n",
+      "Requirement already satisfied: opencv-python>=4.6.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (4.10.0.84)\r\n",
+      "Requirement already satisfied: pillow>=7.1.2 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (9.5.0)\r\n",
+      "Requirement already satisfied: pyyaml>=5.3.1 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (6.0.1)\r\n",
+      "Requirement already satisfied: requests>=2.23.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (2.32.3)\r\n",
+      "Requirement already satisfied: scipy>=1.4.1 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (1.11.4)\r\n",
+      "Requirement already satisfied: torch>=1.8.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (2.1.2)\r\n",
+      "Requirement already satisfied: torchvision>=0.9.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (0.16.2)\r\n",
+      "Requirement already satisfied: tqdm>=4.64.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (4.66.4)\r\n",
+      "Requirement already satisfied: psutil in /opt/conda/lib/python3.10/site-packages (from ultralytics) (5.9.3)\r\n",
+      "Requirement already satisfied: py-cpuinfo in /opt/conda/lib/python3.10/site-packages (from ultralytics) (9.0.0)\r\n",
+      "Requirement already satisfied: pandas>=1.1.4 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (2.2.2)\r\n",
+      "Requirement already satisfied: seaborn>=0.11.0 in /opt/conda/lib/python3.10/site-packages (from ultralytics) (0.12.2)\r\n",
+      "Collecting ultralytics-thop>=2.0.0 (from ultralytics)\r\n",
+      "  Downloading ultralytics_thop-2.0.0-py3-none-any.whl.metadata (8.5 kB)\r\n",
+      "Requirement already satisfied: contourpy>=1.0.1 in /opt/conda/lib/python3.10/site-packages (from matplotlib>=3.3.0->ultralytics) (1.2.0)\r\n",
+      "Requirement already satisfied: cycler>=0.10 in /opt/conda/lib/python3.10/site-packages (from matplotlib>=3.3.0->ultralytics) (0.12.1)\r\n",
+      "Requirement already satisfied: fonttools>=4.22.0 in /opt/conda/lib/python3.10/site-packages (from matplotlib>=3.3.0->ultralytics) (4.47.0)\r\n",
+      "Requirement already satisfied: kiwisolver>=1.0.1 in /opt/conda/lib/python3.10/site-packages (from matplotlib>=3.3.0->ultralytics) (1.4.5)\r\n",
+      "Requirement already satisfied: packaging>=20.0 in /opt/conda/lib/python3.10/site-packages (from matplotlib>=3.3.0->ultralytics) (21.3)\r\n",
+      "Requirement already satisfied: pyparsing>=2.3.1 in /opt/conda/lib/python3.10/site-packages (from matplotlib>=3.3.0->ultralytics) (3.1.1)\r\n",
+      "Requirement already satisfied: python-dateutil>=2.7 in /opt/conda/lib/python3.10/site-packages (from matplotlib>=3.3.0->ultralytics) (2.9.0.post0)\r\n",
+      "Requirement already satisfied: pytz>=2020.1 in /opt/conda/lib/python3.10/site-packages (from pandas>=1.1.4->ultralytics) (2023.3.post1)\r\n",
+      "Requirement already satisfied: tzdata>=2022.7 in /opt/conda/lib/python3.10/site-packages (from pandas>=1.1.4->ultralytics) (2023.4)\r\n",
+      "Requirement already satisfied: charset-normalizer<4,>=2 in /opt/conda/lib/python3.10/site-packages (from requests>=2.23.0->ultralytics) (3.3.2)\r\n",
+      "Requirement already satisfied: idna<4,>=2.5 in /opt/conda/lib/python3.10/site-packages (from requests>=2.23.0->ultralytics) (3.6)\r\n",
+      "Requirement already satisfied: urllib3<3,>=1.21.1 in /opt/conda/lib/python3.10/site-packages (from requests>=2.23.0->ultralytics) (1.26.18)\r\n",
+      "Requirement already satisfied: certifi>=2017.4.17 in /opt/conda/lib/python3.10/site-packages (from requests>=2.23.0->ultralytics) (2024.7.4)\r\n",
+      "Requirement already satisfied: filelock in /opt/conda/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics) (3.13.1)\r\n",
+      "Requirement already satisfied: typing-extensions in /opt/conda/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics) (4.9.0)\r\n",
+      "Requirement already satisfied: sympy in /opt/conda/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics) (1.13.0)\r\n",
+      "Requirement already satisfied: networkx in /opt/conda/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics) (3.2.1)\r\n",
+      "Requirement already satisfied: jinja2 in /opt/conda/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics) (3.1.2)\r\n",
+      "Requirement already satisfied: fsspec in /opt/conda/lib/python3.10/site-packages (from torch>=1.8.0->ultralytics) (2024.5.0)\r\n",
+      "Requirement already satisfied: six>=1.5 in /opt/conda/lib/python3.10/site-packages (from python-dateutil>=2.7->matplotlib>=3.3.0->ultralytics) (1.16.0)\r\n",
+      "Requirement already satisfied: MarkupSafe>=2.0 in /opt/conda/lib/python3.10/site-packages (from jinja2->torch>=1.8.0->ultralytics) (2.1.3)\r\n",
+      "Requirement already satisfied: mpmath<1.4,>=1.1.0 in /opt/conda/lib/python3.10/site-packages (from sympy->torch>=1.8.0->ultralytics) (1.3.0)\r\n",
+      "Downloading ultralytics-8.2.66-py3-none-any.whl (825 kB)\r\n",
+      "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m825.5/825.5 kB\u001b[0m \u001b[31m25.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\r\n",
+      "\u001b[?25hDownloading ultralytics_thop-2.0.0-py3-none-any.whl (25 kB)\r\n",
+      "Installing collected packages: ultralytics-thop, ultralytics\r\n",
+      "Successfully installed ultralytics-8.2.66 ultralytics-thop-2.0.0\r\n",
+      "Note: you may need to restart the kernel to use updated packages.\n"
+     ]
+    }
+   ],
+   "source": [
+    "%pip install ultralytics"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8759a933",
+   "metadata": {
+    "papermill": {
+     "duration": 0.006027,
+     "end_time": "2024-07-26T01:39:47.319219",
+     "exception": false,
+     "start_time": "2024-07-26T01:39:47.313192",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "Now we can install the necessary components we will be using."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "47128242",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-26T01:39:47.332933Z",
+     "iopub.status.busy": "2024-07-26T01:39:47.332268Z",
+     "iopub.status.idle": "2024-07-26T01:40:05.291800Z",
+     "shell.execute_reply": "2024-07-26T01:40:05.290737Z"
+    },
+    "papermill": {
+     "duration": 17.968453,
+     "end_time": "2024-07-26T01:40:05.293716",
+     "exception": false,
+     "start_time": "2024-07-26T01:39:47.325263",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Ultralytics YOLOv8.2.66 🚀 Python-3.10.13 torch-2.1.2 CUDA:0 (Tesla T4, 15095MiB)\n",
+      "Setup complete ✅ (4 CPUs, 31.4 GB RAM, 5771.7/8062.4 GB disk)\n"
+     ]
+    }
+   ],
+   "source": [
+    "import os\n",
+    "import cv2\n",
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import shutil\n",
+    "from shutil import copyfile\n",
+    "import matplotlib.pyplot as plt\n",
+    "# from matplotlib import animation, rc\n",
+    "# rc('animation', html='jshtml')\n",
+    "from PIL import Image\n",
+    "\n",
+    "import ultralytics\n",
+    "from ultralytics import YOLO\n",
+    "ultralytics.checks()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "32effcd5",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-26T01:40:05.307258Z",
+     "iopub.status.busy": "2024-07-26T01:40:05.306832Z",
+     "iopub.status.idle": "2024-07-26T01:40:05.319077Z",
+     "shell.execute_reply": "2024-07-26T01:40:05.318175Z"
+    },
+    "papermill": {
+     "duration": 0.021114,
+     "end_time": "2024-07-26T01:40:05.321076",
+     "exception": false,
+     "start_time": "2024-07-26T01:40:05.299962",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['valid', 'test', 'train']"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "path = os.path.relpath(\"/kaggle/input/maze-classification-localization/data\")\n",
+    "files = os.listdir(path)\n",
+    "files"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ed008396",
+   "metadata": {
+    "papermill": {
+     "duration": 0.006153,
+     "end_time": "2024-07-26T01:40:05.333447",
+     "exception": false,
+     "start_time": "2024-07-26T01:40:05.327294",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "# Create yaml file\n",
+    "YAML is a data serialization language that is designed to be 'human readable'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "4bf2c62d",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-26T01:40:05.346885Z",
+     "iopub.status.busy": "2024-07-26T01:40:05.346603Z",
+     "iopub.status.idle": "2024-07-26T01:40:06.360401Z",
+     "shell.execute_reply": "2024-07-26T01:40:06.359451Z"
+    },
+    "papermill": {
+     "duration": 1.023109,
+     "end_time": "2024-07-26T01:40:06.362735",
+     "exception": false,
+     "start_time": "2024-07-26T01:40:05.339626",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{names: [distortion], nc: 1, test: test, train: train, val: valid}\r\n"
+     ]
+    }
+   ],
+   "source": [
+    "import yaml\n",
+    "\n",
+    "data_yaml = dict(\n",
+    "    train='train',\n",
+    "    val='valid',\n",
+    "    test='test',\n",
+    "    nc=1,\n",
+    "    names=['distortion']\n",
+    ")\n",
+    "\n",
+    "with open('data.yaml', 'w') as outfile:\n",
+    "    yaml.dump(data_yaml, outfile, default_flow_style=True)\n",
+    "    \n",
+    "%cat data.yaml"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "7d11bf6d",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-26T01:40:06.377122Z",
+     "iopub.status.busy": "2024-07-26T01:40:06.376799Z",
+     "iopub.status.idle": "2024-07-26T01:40:40.260675Z",
+     "shell.execute_reply": "2024-07-26T01:40:40.259892Z"
+    },
+    "papermill": {
+     "duration": 33.893588,
+     "end_time": "2024-07-26T01:40:40.263038",
+     "exception": false,
+     "start_time": "2024-07-26T01:40:06.369450",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "shutil.copytree(\"/kaggle/input/maze-classification-localization/data\", \"/kaggle/working/datasets\", dirs_exist_ok=True)\n",
+    "os.chdir(\"/kaggle/working\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9a76d426",
+   "metadata": {
+    "papermill": {
+     "duration": 0.006265,
+     "end_time": "2024-07-26T01:40:40.275824",
+     "exception": false,
+     "start_time": "2024-07-26T01:40:40.269559",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "# Train\n",
+    "Now we can begin looking into training the model.  First let's load the model."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "31409a6a",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-26T01:40:40.289460Z",
+     "iopub.status.busy": "2024-07-26T01:40:40.289163Z",
+     "iopub.status.idle": "2024-07-26T01:40:42.521879Z",
+     "shell.execute_reply": "2024-07-26T01:40:42.520875Z"
+    },
+    "papermill": {
+     "duration": 2.24216,
+     "end_time": "2024-07-26T01:40:42.524351",
+     "exception": false,
+     "start_time": "2024-07-26T01:40:40.282191",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Downloading https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8x.pt to 'yolov8x.pt'...\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "100%|██████████| 131M/131M [00:01<00:00, 115MB/s]\n"
+     ]
+    }
+   ],
+   "source": [
+    "model = YOLO(\"yolov8x.pt\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "3a088c05",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-26T01:40:42.540827Z",
+     "iopub.status.busy": "2024-07-26T01:40:42.540108Z",
+     "iopub.status.idle": "2024-07-26T01:40:42.543879Z",
+     "shell.execute_reply": "2024-07-26T01:40:42.543029Z"
+    },
+    "papermill": {
+     "duration": 0.013621,
+     "end_time": "2024-07-26T01:40:42.545679",
+     "exception": false,
+     "start_time": "2024-07-26T01:40:42.532058",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "# model.names = {0: 'distortion'}\n",
+    "# model.nc = 1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "51577b16",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-26T01:40:42.562045Z",
+     "iopub.status.busy": "2024-07-26T01:40:42.561732Z",
+     "iopub.status.idle": "2024-07-26T01:56:20.134580Z",
+     "shell.execute_reply": "2024-07-26T01:56:20.133700Z"
+    },
+    "papermill": {
+     "duration": 937.584047,
+     "end_time": "2024-07-26T01:56:20.137020",
+     "exception": false,
+     "start_time": "2024-07-26T01:40:42.552973",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Ultralytics YOLOv8.2.66 🚀 Python-3.10.13 torch-2.1.2 CUDA:0 (Tesla T4, 15095MiB)\n",
+      "\u001b[34m\u001b[1mengine/trainer: \u001b[0mtask=detect, mode=train, model=yolov8x.pt, data=data.yaml, epochs=4, time=None, patience=100, batch=16, imgsz=480, save=True, save_period=-1, cache=False, device=None, workers=8, project=None, name=bulge_yolo_model, exist_ok=False, pretrained=True, optimizer=auto, verbose=True, seed=0, deterministic=True, single_cls=False, rect=False, cos_lr=False, close_mosaic=10, resume=False, amp=True, fraction=1.0, profile=False, freeze=None, multi_scale=False, overlap_mask=True, mask_ratio=4, dropout=0.0, val=True, split=val, save_json=False, save_hybrid=False, conf=None, iou=0.7, max_det=300, half=False, dnn=False, plots=True, source=None, vid_stride=1, stream_buffer=False, visualize=False, augment=False, agnostic_nms=False, classes=None, retina_masks=False, embed=None, show=False, save_frames=False, save_txt=False, save_conf=False, save_crop=False, show_labels=True, show_conf=True, show_boxes=True, line_width=None, format=torchscript, keras=False, optimize=False, int8=False, dynamic=False, simplify=False, opset=None, workspace=4, nms=False, lr0=0.01, lrf=0.01, momentum=0.937, weight_decay=0.0005, warmup_epochs=3.0, warmup_momentum=0.8, warmup_bias_lr=0.1, box=7.5, cls=0.5, dfl=1.5, pose=12.0, kobj=1.0, label_smoothing=0.0, nbs=64, hsv_h=0.015, hsv_s=0.7, hsv_v=0.4, degrees=0.0, translate=0.1, scale=0.5, shear=0.0, perspective=0.0, flipud=0.0, fliplr=0.5, bgr=0.0, mosaic=1.0, mixup=0.0, copy_paste=0.0, auto_augment=randaugment, erasing=0.4, crop_fraction=1.0, cfg=None, tracker=botsort.yaml, save_dir=runs/detect/bulge_yolo_model\n",
+      "Downloading https://ultralytics.com/assets/Arial.ttf to '/root/.config/Ultralytics/Arial.ttf'...\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "100%|██████████| 755k/755k [00:00<00:00, 19.2MB/s]\n",
+      "2024-07-26 01:40:44,422\tINFO util.py:124 -- Outdated packages:\n",
+      "  ipywidgets==7.7.1 found, needs ipywidgets>=8\n",
+      "Run `pip install -U ipywidgets`, then restart the notebook server for rich notebook output.\n",
+      "2024-07-26 01:40:45,228\tINFO util.py:124 -- Outdated packages:\n",
+      "  ipywidgets==7.7.1 found, needs ipywidgets>=8\n",
+      "Run `pip install -U ipywidgets`, then restart the notebook server for rich notebook output.\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overriding model.yaml nc=80 with nc=1\n",
+      "\n",
+      "                   from  n    params  module                                       arguments                     \n",
+      "  0                  -1  1      2320  ultralytics.nn.modules.conv.Conv             [3, 80, 3, 2]                 \n",
+      "  1                  -1  1    115520  ultralytics.nn.modules.conv.Conv             [80, 160, 3, 2]               \n",
+      "  2                  -1  3    436800  ultralytics.nn.modules.block.C2f             [160, 160, 3, True]           \n",
+      "  3                  -1  1    461440  ultralytics.nn.modules.conv.Conv             [160, 320, 3, 2]              \n",
+      "  4                  -1  6   3281920  ultralytics.nn.modules.block.C2f             [320, 320, 6, True]           \n",
+      "  5                  -1  1   1844480  ultralytics.nn.modules.conv.Conv             [320, 640, 3, 2]              \n",
+      "  6                  -1  6  13117440  ultralytics.nn.modules.block.C2f             [640, 640, 6, True]           \n",
+      "  7                  -1  1   3687680  ultralytics.nn.modules.conv.Conv             [640, 640, 3, 2]              \n",
+      "  8                  -1  3   6969600  ultralytics.nn.modules.block.C2f             [640, 640, 3, True]           \n",
+      "  9                  -1  1   1025920  ultralytics.nn.modules.block.SPPF            [640, 640, 5]                 \n",
+      " 10                  -1  1         0  torch.nn.modules.upsampling.Upsample         [None, 2, 'nearest']          \n",
+      " 11             [-1, 6]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           \n",
+      " 12                  -1  3   7379200  ultralytics.nn.modules.block.C2f             [1280, 640, 3]                \n",
+      " 13                  -1  1         0  torch.nn.modules.upsampling.Upsample         [None, 2, 'nearest']          \n",
+      " 14             [-1, 4]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           \n",
+      " 15                  -1  3   1948800  ultralytics.nn.modules.block.C2f             [960, 320, 3]                 \n",
+      " 16                  -1  1    922240  ultralytics.nn.modules.conv.Conv             [320, 320, 3, 2]              \n",
+      " 17            [-1, 12]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           \n",
+      " 18                  -1  3   7174400  ultralytics.nn.modules.block.C2f             [960, 640, 3]                 \n",
+      " 19                  -1  1   3687680  ultralytics.nn.modules.conv.Conv             [640, 640, 3, 2]              \n",
+      " 20             [-1, 9]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           \n",
+      " 21                  -1  3   7379200  ultralytics.nn.modules.block.C2f             [1280, 640, 3]                \n",
+      " 22        [15, 18, 21]  1   8718931  ultralytics.nn.modules.head.Detect           [1, [320, 640, 640]]          \n",
+      "Model summary: 365 layers, 68,153,571 parameters, 68,153,555 gradients, 258.1 GFLOPs\n",
+      "\n",
+      "Transferred 589/595 items from pretrained weights\n",
+      "\u001b[34m\u001b[1mTensorBoard: \u001b[0mStart with 'tensorboard --logdir runs/detect/bulge_yolo_model', view at http://localhost:6006/\n",
+      "Freezing layer 'model.22.dfl.conv.weight'\n",
+      "\u001b[34m\u001b[1mAMP: \u001b[0mrunning Automatic Mixed Precision (AMP) checks with YOLOv8n...\n",
+      "Downloading https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8n.pt to 'yolov8n.pt'...\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "100%|██████████| 6.25M/6.25M [00:00<00:00, 116MB/s]\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\u001b[34m\u001b[1mAMP: \u001b[0mchecks passed ✅\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[34m\u001b[1mtrain: \u001b[0mScanning /kaggle/working/datasets/train/labels... 2400 images, 2400 backgrounds, 3 corrupt: 100%|██████████| 4800/4800 [00:02<00:00, 1648.58it/s]"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\u001b[34m\u001b[1mtrain: \u001b[0mWARNING ⚠️ /kaggle/working/datasets/train/images/1098_distorted.jpg: ignoring corrupt image/label: negative label values [   -0.11336    -0.11336]\n",
+      "\u001b[34m\u001b[1mtrain: \u001b[0mWARNING ⚠️ /kaggle/working/datasets/train/images/2111_distorted.jpg: ignoring corrupt image/label: negative label values [  -0.011259   -0.011259]\n",
+      "\u001b[34m\u001b[1mtrain: \u001b[0mWARNING ⚠️ /kaggle/working/datasets/train/images/2354_distorted.jpg: ignoring corrupt image/label: negative label values [  -0.022605   -0.022605]\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\u001b[34m\u001b[1mtrain: \u001b[0mNew cache created: /kaggle/working/datasets/train/labels.cache\n",
+      "\u001b[34m\u001b[1malbumentations: \u001b[0mBlur(p=0.01, blur_limit=(3, 7)), MedianBlur(p=0.01, blur_limit=(3, 7)), ToGray(p=0.01), CLAHE(p=0.01, clip_limit=(1, 4.0), tile_grid_size=(8, 8))\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/opt/conda/lib/python3.10/multiprocessing/popen_fork.py:66: RuntimeWarning: os.fork() was called. os.fork() is incompatible with multithreaded code, and JAX is multithreaded, so this will likely lead to a deadlock.\n",
+      "  self.pid = os.fork()\n",
+      "\u001b[34m\u001b[1mval: \u001b[0mScanning /kaggle/working/datasets/valid/labels... 300 images, 300 backgrounds, 0 corrupt: 100%|██████████| 600/600 [00:00<00:00, 1634.68it/s]"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\u001b[34m\u001b[1mval: \u001b[0mNew cache created: /kaggle/working/datasets/valid/labels.cache\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Plotting labels to runs/detect/bulge_yolo_model/labels.jpg... \n",
+      "\u001b[34m\u001b[1moptimizer:\u001b[0m 'optimizer=auto' found, ignoring 'lr0=0.01' and 'momentum=0.937' and determining best 'optimizer', 'lr0' and 'momentum' automatically... \n",
+      "\u001b[34m\u001b[1moptimizer:\u001b[0m AdamW(lr=0.002, momentum=0.9) with parameter groups 97 weight(decay=0.0), 104 weight(decay=0.0005), 103 bias(decay=0.0)\n",
+      "\u001b[34m\u001b[1mTensorBoard: \u001b[0mmodel graph visualization added ✅\n",
+      "Image sizes 480 train, 480 val\n",
+      "Using 2 dataloader workers\n",
+      "Logging results to \u001b[1mruns/detect/bulge_yolo_model\u001b[0m\n",
+      "Starting training for 4 epochs...\n",
+      "\n",
+      "      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "        1/4      8.65G     0.6335     0.8126      1.173         16        480: 100%|██████████| 300/300 [03:30<00:00,  1.42it/s]\n",
+      "                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100%|██████████| 19/19 [00:11<00:00,  1.70it/s]"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                   all        600        300      0.458      0.535      0.495       0.35\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "        2/4      8.34G     0.5147       0.46      1.075         12        480: 100%|██████████| 300/300 [03:28<00:00,  1.44it/s]\n",
+      "                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100%|██████████| 19/19 [00:10<00:00,  1.89it/s]"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                   all        600        300          1      0.964      0.982      0.929\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "        3/4      8.31G     0.4118       0.36      1.007         14        480: 100%|██████████| 300/300 [03:25<00:00,  1.46it/s]\n",
+      "                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100%|██████████| 19/19 [00:10<00:00,  1.90it/s]"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                   all        600        300          1      0.992      0.995      0.963\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "        4/4      8.55G     0.3101     0.2846     0.9546          5        480: 100%|██████████| 300/300 [03:25<00:00,  1.46it/s]\n",
+      "                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100%|██████████| 19/19 [00:09<00:00,  1.92it/s]"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                   all        600        300          1          1      0.995      0.992\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "4 epochs completed in 0.247 hours.\n",
+      "Optimizer stripped from runs/detect/bulge_yolo_model/weights/last.pt, 136.7MB\n",
+      "Optimizer stripped from runs/detect/bulge_yolo_model/weights/best.pt, 136.7MB\n",
+      "\n",
+      "Validating runs/detect/bulge_yolo_model/weights/best.pt...\n",
+      "Ultralytics YOLOv8.2.66 🚀 Python-3.10.13 torch-2.1.2 CUDA:0 (Tesla T4, 15095MiB)\n",
+      "Model summary (fused): 268 layers, 68,124,531 parameters, 0 gradients, 257.4 GFLOPs\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100%|██████████| 19/19 [00:10<00:00,  1.77it/s]\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                   all        600        300          1          1      0.995      0.992\n",
+      "Speed: 0.1ms preprocess, 14.0ms inference, 0.0ms loss, 1.2ms postprocess per image\n",
+      "Results saved to \u001b[1mruns/detect/bulge_yolo_model\u001b[0m\n"
+     ]
+    }
+   ],
+   "source": [
+    "# !yolo task=detect mode=train model=yolov8x.pt data=data.yaml epochs=4 imgsz=480\n",
+    "results = model.train(data='data.yaml', epochs=4, imgsz=480, name='bulge_yolo_model')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "d61bb9c5",
+   "metadata": {
+    "papermill": {
+     "duration": 0.257646,
+     "end_time": "2024-07-26T01:56:20.608178",
+     "exception": false,
+     "start_time": "2024-07-26T01:56:20.350532",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "# Saving the Model\n",
+    "\n",
+    "Now we are going to save the model! We can use the built in `.save` function within ultralytics.  We will save it with the .pt extension which is a PyTorch extension.  "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "b870231f",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-26T01:56:21.030573Z",
+     "iopub.status.busy": "2024-07-26T01:56:21.029677Z",
+     "iopub.status.idle": "2024-07-26T01:56:21.955631Z",
+     "shell.execute_reply": "2024-07-26T01:56:21.954697Z"
+    },
+    "papermill": {
+     "duration": 1.13982,
+     "end_time": "2024-07-26T01:56:21.957710",
+     "exception": false,
+     "start_time": "2024-07-26T01:56:20.817890",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "image 1/1 /kaggle/input/maze-classification-localization/data/train/images/1004_distorted.jpg: 480x480 1 distortion, 55.8ms\n",
+      "Speed: 1.8ms preprocess, 55.8ms inference, 1.4ms postprocess per image at shape (1, 3, 480, 480)\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "[ultralytics.engine.results.Results object with attributes:\n",
+       " \n",
+       " boxes: ultralytics.engine.results.Boxes object\n",
+       " keypoints: None\n",
+       " masks: None\n",
+       " names: {0: 'distortion'}\n",
+       " obb: None\n",
+       " orig_img: array([[[236, 236, 236],\n",
+       "         [255, 255, 255],\n",
+       "         [251, 251, 251],\n",
+       "         ...,\n",
+       "         [246, 246, 246],\n",
+       "         [255, 255, 255],\n",
+       "         [255, 255, 255]],\n",
+       " \n",
+       "        [[255, 255, 255],\n",
+       "         [255, 255, 255],\n",
+       "         [234, 234, 234],\n",
+       "         ...,\n",
+       "         [255, 255, 255],\n",
+       "         [255, 255, 255],\n",
+       "         [255, 255, 255]],\n",
+       " \n",
+       "        [[235, 235, 235],\n",
+       "         [246, 246, 246],\n",
+       "         [255, 255, 255],\n",
+       "         ...,\n",
+       "         [255, 255, 255],\n",
+       "         [245, 245, 245],\n",
+       "         [242, 242, 242]],\n",
+       " \n",
+       "        ...,\n",
+       " \n",
+       "        [[245, 245, 245],\n",
+       "         [255, 255, 255],\n",
+       "         [255, 255, 255],\n",
+       "         ...,\n",
+       "         [255, 255, 255],\n",
+       "         [254, 254, 254],\n",
+       "         [250, 250, 250]],\n",
+       " \n",
+       "        [[252, 252, 252],\n",
+       "         [253, 253, 253],\n",
+       "         [252, 252, 252],\n",
+       "         ...,\n",
+       "         [251, 251, 251],\n",
+       "         [255, 255, 255],\n",
+       "         [255, 255, 255]],\n",
+       " \n",
+       "        [[255, 255, 255],\n",
+       "         [255, 255, 255],\n",
+       "         [248, 248, 248],\n",
+       "         ...,\n",
+       "         [255, 255, 255],\n",
+       "         [255, 255, 255],\n",
+       "         [242, 242, 242]]], dtype=uint8)\n",
+       " orig_shape: (453, 453)\n",
+       " path: '/kaggle/input/maze-classification-localization/data/train/images/1004_distorted.jpg'\n",
+       " probs: None\n",
+       " save_dir: 'runs/detect/bulge_yolo_model2'\n",
+       " speed: {'preprocess': 1.77001953125, 'inference': 55.806875228881836, 'postprocess': 1.428365707397461}]"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "model.predict('/kaggle/input/maze-classification-localization/data/train/images/1004_distorted.jpg')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "c9109efe",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-26T01:56:22.391507Z",
+     "iopub.status.busy": "2024-07-26T01:56:22.390571Z",
+     "iopub.status.idle": "2024-07-26T01:56:22.395109Z",
+     "shell.execute_reply": "2024-07-26T01:56:22.394185Z"
+    },
+    "papermill": {
+     "duration": 0.219455,
+     "end_time": "2024-07-26T01:56:22.397094",
+     "exception": false,
+     "start_time": "2024-07-26T01:56:22.177639",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "# model.save('/kaggle/working/bulge_yolo_model.pt')"
+   ]
+  }
+ ],
+ "metadata": {
+  "kaggle": {
+   "accelerator": "nvidiaTeslaT4",
+   "dataSources": [
+    {
+     "datasetId": 5407454,
+     "sourceId": 8987164,
+     "sourceType": "datasetVersion"
+    }
+   ],
+   "dockerImageVersionId": 30746,
+   "isGpuEnabled": true,
+   "isInternetEnabled": true,
+   "language": "python",
+   "sourceType": "notebook"
+  },
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.13"
+  },
+  "papermill": {
+   "default_parameters": {},
+   "duration": 1016.678099,
+   "end_time": "2024-07-26T01:56:25.445161",
+   "environment_variables": {},
+   "exception": null,
+   "input_path": "__notebook__.ipynb",
+   "output_path": "__notebook__.ipynb",
+   "parameters": {},
+   "start_time": "2024-07-26T01:39:28.767062",
+   "version": "2.5.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
