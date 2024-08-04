@@ -1,6 +1,8 @@
 import numpy as np
 from PIL import Image
-from img_gen import init 
+# from dataset_generation.img_gen import img_gen
+from img_gen import init
+# from dataset_generation.dfs_generation import dfs_generation
 from dfs_generation import generate
 import time
 

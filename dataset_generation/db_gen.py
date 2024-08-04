@@ -1,10 +1,11 @@
 import os
+
 import numpy as np
 from os import path
 from dfs_generation import generate
 from img_gen import init, run
 from PIL import Image
-
+import sys
 
 # Overall Parameters
 # Overall image size: 16x9 Aspect Ratio
@@ -38,9 +39,13 @@ def maze_grid_generation(size_x, size_y, walls, cell, max_y, counter, gridonly=F
         return a
         
 
-
 # Image generation should be configured, now just need to setup the maze generation
 if __name__ == "__main__":
+    print("This program is used to generate multiple mazes and grids of different pixel weights and spacings.")
+    print("This program currently has an int error when running.")
+    x = input("If you would like to continue plese type [y]es or [n]o")
+    if x == "n" or x == "no":
+        sys.exit()
 
     os.makedirs("data", exist_ok=True)
     os.chdir("data/")

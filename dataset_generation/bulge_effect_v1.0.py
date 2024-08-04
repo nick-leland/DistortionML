@@ -82,6 +82,7 @@ def main(image, factor=1, generate=False, posx=0.5, posy=0.5, save=False, show=F
 
 if __name__ == "__main__":
     print("This script can also be used to generate images in bulk.  Please edit main function for more information")
+    print("Note, this is outdated and isn't up entirely functioning.")
     image = input("Please give the file path to the image that will be distorted\n")
     factor=0.01 * int(input("Please give a factor number (0-100)\n"))
     main(image, generate=False, show=True, factora=factor, factorb=factor)

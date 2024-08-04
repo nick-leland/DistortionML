@@ -1,8 +1,14 @@
 import numpy as np
 from PIL import Image
-from transformation import apply_vector_field_transform
 import os
 from os import path
+import sys
+
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) 
+sys.path.insert(0, parent_dir)
+import transformation
+from transformation import apply_vector_field_transform
+
 
 def definitions(generator):
 
@@ -66,21 +72,26 @@ if __name__ == "__main__":
     # Sets the numpy generator
     rng = np.random.default_rng()
 
-    os.makedirs("data", exist_ok=True)
-    os.chdir("data/")
-    os.makedirs("grid", exist_ok=True)
-    os.makedirs("output", exist_ok=True)
-    files = os.listdir("grid/")
-    os.chdir("grid/")
+    print("This program is used to take images that are in the grid folder and apply vector field transformations to those images.")
+    x = input("If you would like to continue plese type [y]es or [n]o\n")
+    if x == "n" or x == "no":
+        sys.exit()
+    else:
+        os.makedirs("data", exist_ok=True)
+        os.chdir("data/")
+        os.makedirs("grid", exist_ok=True)
+        os.makedirs("output", exist_ok=True)
+        files = os.listdir("grid/")
+        os.chdir("grid/")
 
-    for _ in files:
-        rad, location, strth, smth = definitions(rng)
-        I = np.asarray(Image.open(_))
-        transformed, (gx, gy) = apply_vector_field_transform(I, bulge, rad, location, strth, smth)
+        for _ in files:
+            rad, location, strth, smth = definitions(rng)
+            I = np.asarray(Image.open(_))
+            transformed, (gx, gy) = apply_vector_field_transform(I, bulge, rad, location, strth, smth)
 
-        os.chdir("../output/")
-        result = Image.fromarray(transformed)
-        result.save(f"{_.title()}.jpg")
-        os.chdir("../grid/")
+            os.chdir("../output/")
+            result = Image.fromarray(transformed)
+            result.save(f"{_.title()}.jpg")
+            os.chdir("../grid/")
 
 

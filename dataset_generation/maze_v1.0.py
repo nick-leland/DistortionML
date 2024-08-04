@@ -1,8 +1,16 @@
+import os
+import sys
 import numpy as np
 from PIL import Image
-from img_gen import run
-from dfs_generation import generate
 import time
+
+sys.path.append('../')
+# from dataset_generation import img_gen 
+from img_gen import run
+
+# from dataset_generation import dfs_generation
+from dfs_generation import generate
+
 
 if __name__ == "__main__":
     size = input("What size of a maze do you want? Required format is '#x#'")
